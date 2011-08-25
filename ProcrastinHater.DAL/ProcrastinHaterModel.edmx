@@ -1,0 +1,376 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="ProcrastinHater.DataModel.Store" Alias="Self" Provider="System.Data.SqlServerCe.3.5" ProviderManifestToken="3.5" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityContainer Name="ProcrastinHaterDataModelStoreContainer">
+          <EntitySet Name="ChecklistElements" EntityType="ProcrastinHater.DataModel.Store.ChecklistElements" store:Type="Tables" />
+          <EntitySet Name="DatabaseInfo" EntityType="ProcrastinHater.DataModel.Store.DatabaseInfo" store:Type="Tables" />
+          <EntitySet Name="Groups" EntityType="ProcrastinHater.DataModel.Store.Groups" store:Type="Tables" />
+          <EntitySet Name="PositionInformation" EntityType="ProcrastinHater.DataModel.Store.PositionInformation" store:Type="Tables" />
+          <EntitySet Name="Tasks" EntityType="ProcrastinHater.DataModel.Store.Tasks" store:Type="Tables" />
+          <AssociationSet Name="FK_ChecklistElements_Groups" Association="ProcrastinHater.DataModel.Store.FK_ChecklistElements_Groups">
+            <End Role="Groups" EntitySet="Groups" />
+            <End Role="ChecklistElements" EntitySet="ChecklistElements" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Groups_ChecklistElements" Association="ProcrastinHater.DataModel.Store.FK_Groups_ChecklistElements">
+            <End Role="ChecklistElements" EntitySet="ChecklistElements" />
+            <End Role="Groups" EntitySet="Groups" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PositionInfoItemID_ChecklistElements" Association="ProcrastinHater.DataModel.Store.FK_PositionInfoItemID_ChecklistElements">
+            <End Role="ChecklistElements" EntitySet="ChecklistElements" />
+            <End Role="PositionInformation" EntitySet="PositionInformation" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PositionInfoNextItemID_ChecklistElements" Association="ProcrastinHater.DataModel.Store.FK_PositionInfoNextItemID_ChecklistElements">
+            <End Role="ChecklistElements" EntitySet="ChecklistElements" />
+            <End Role="PositionInformation" EntitySet="PositionInformation" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PositionInfoPreviousItemID_ChecklistElements" Association="ProcrastinHater.DataModel.Store.FK_PositionInfoPreviousItemID_ChecklistElements">
+            <End Role="ChecklistElements" EntitySet="ChecklistElements" />
+            <End Role="PositionInformation" EntitySet="PositionInformation" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tasks_ChecklistElements" Association="ProcrastinHater.DataModel.Store.FK_Tasks_ChecklistElements">
+            <End Role="ChecklistElements" EntitySet="ChecklistElements" />
+            <End Role="Tasks" EntitySet="Tasks" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="ChecklistElements">
+          <Key>
+            <PropertyRef Name="ItemID" />
+          </Key>
+          <Property Name="ItemID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" Nullable="false" MaxLength="800" />
+          <Property Name="ParentGroupID" Type="int" />
+          <Property Name="BackgroundColor" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="FontName" Type="nvarchar" Nullable="false" MaxLength="200" />
+          <Property Name="FontColor" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="FontSize" Type="float" Nullable="false" />
+          <Property Name="CreateTime" Type="datetime" Nullable="false" />
+          <Property Name="ResolveTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="DatabaseInfo">
+          <Key>
+            <PropertyRef Name="NextChecklistItemKey" />
+          </Key>
+          <Property Name="NextChecklistItemKey" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Groups">
+          <Key>
+            <PropertyRef Name="GroupID" />
+          </Key>
+          <Property Name="GroupID" Type="int" Nullable="false" />
+          <Property Name="IsExpanded" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PositionInformation">
+          <Key>
+            <PropertyRef Name="ItemID" />
+          </Key>
+          <Property Name="ItemID" Type="int" Nullable="false" />
+          <Property Name="NextItemID" Type="int" />
+          <Property Name="PreviousItemID" Type="int" />
+        </EntityType>
+        <EntityType Name="Tasks">
+          <Key>
+            <PropertyRef Name="TaskID" />
+          </Key>
+          <Property Name="TaskID" Type="int" Nullable="false" />
+          <Property Name="Details" Type="nvarchar" MaxLength="2000" />
+          <Property Name="Status" Type="int" Nullable="false" />
+          <Property Name="DueTime" Type="datetime" />
+        </EntityType>
+        <Association Name="FK_ChecklistElements_Groups">
+          <End Role="Groups" Type="ProcrastinHater.DataModel.Store.Groups" Multiplicity="0..1" />
+          <End Role="ChecklistElements" Type="ProcrastinHater.DataModel.Store.ChecklistElements" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Groups">
+              <PropertyRef Name="GroupID" />
+            </Principal>
+            <Dependent Role="ChecklistElements">
+              <PropertyRef Name="ParentGroupID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Groups_ChecklistElements">
+          <End Role="ChecklistElements" Type="ProcrastinHater.DataModel.Store.ChecklistElements" Multiplicity="1" />
+          <End Role="Groups" Type="ProcrastinHater.DataModel.Store.Groups" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="ChecklistElements">
+              <PropertyRef Name="ItemID" />
+            </Principal>
+            <Dependent Role="Groups">
+              <PropertyRef Name="GroupID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PositionInfoItemID_ChecklistElements">
+          <End Role="ChecklistElements" Type="ProcrastinHater.DataModel.Store.ChecklistElements" Multiplicity="1" />
+          <End Role="PositionInformation" Type="ProcrastinHater.DataModel.Store.PositionInformation" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="ChecklistElements">
+              <PropertyRef Name="ItemID" />
+            </Principal>
+            <Dependent Role="PositionInformation">
+              <PropertyRef Name="ItemID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PositionInfoNextItemID_ChecklistElements">
+          <End Role="ChecklistElements" Type="ProcrastinHater.DataModel.Store.ChecklistElements" Multiplicity="0..1" />
+          <End Role="PositionInformation" Type="ProcrastinHater.DataModel.Store.PositionInformation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ChecklistElements">
+              <PropertyRef Name="ItemID" />
+            </Principal>
+            <Dependent Role="PositionInformation">
+              <PropertyRef Name="NextItemID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PositionInfoPreviousItemID_ChecklistElements">
+          <End Role="ChecklistElements" Type="ProcrastinHater.DataModel.Store.ChecklistElements" Multiplicity="0..1" />
+          <End Role="PositionInformation" Type="ProcrastinHater.DataModel.Store.PositionInformation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ChecklistElements">
+              <PropertyRef Name="ItemID" />
+            </Principal>
+            <Dependent Role="PositionInformation">
+              <PropertyRef Name="PreviousItemID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tasks_ChecklistElements">
+          <End Role="ChecklistElements" Type="ProcrastinHater.DataModel.Store.ChecklistElements" Multiplicity="1" />
+          <End Role="Tasks" Type="ProcrastinHater.DataModel.Store.Tasks" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="ChecklistElements">
+              <PropertyRef Name="ItemID" />
+            </Principal>
+            <Dependent Role="Tasks">
+              <PropertyRef Name="TaskID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ProcrastinHater.POCOEntities" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityContainer Name="ProcrastinHaterEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ChecklistElements" EntityType="ProcrastinHater.POCOEntities.ChecklistElement" />
+          <EntitySet Name="DatabaseInfoes" EntityType="ProcrastinHater.POCOEntities.DatabaseInfo" />
+          <EntitySet Name="PositionInformations" EntityType="ProcrastinHater.POCOEntities.PositionInformation" />
+          <AssociationSet Name="FK_ChecklistElements_Groups" Association="ProcrastinHater.POCOEntities.FK_ChecklistElements_Groups">
+            <End Role="Groups" EntitySet="ChecklistElements" />
+            <End Role="ChecklistElements" EntitySet="ChecklistElements" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PositionInfoItemID_ChecklistElements" Association="ProcrastinHater.POCOEntities.FK_PositionInfoItemID_ChecklistElements">
+            <End Role="ChecklistElements" EntitySet="ChecklistElements" />
+            <End Role="PositionInformation" EntitySet="PositionInformations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PositionInfoNextItemID_ChecklistElements" Association="ProcrastinHater.POCOEntities.FK_PositionInfoNextItemID_ChecklistElements">
+            <End Role="ChecklistElements" EntitySet="ChecklistElements" />
+            <End Role="PositionInformation" EntitySet="PositionInformations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PositionInfoPreviousItemID_ChecklistElements" Association="ProcrastinHater.POCOEntities.FK_PositionInfoPreviousItemID_ChecklistElements">
+            <End Role="ChecklistElements" EntitySet="ChecklistElements" />
+            <End Role="PositionInformation" EntitySet="PositionInformations" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="ChecklistElement" Abstract="true">
+          <Key>
+            <PropertyRef Name="ItemID" />
+          </Key>
+          <Property Name="ItemID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="800" Unicode="true" FixedLength="false" />
+          <Property Name="ParentGroupID" Type="Int32" />
+          <Property Name="BackgroundColor" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="FontName" Type="String" Nullable="false" MaxLength="200" Unicode="true" FixedLength="false" />
+          <Property Name="FontColor" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="FontSize" Type="Double" Nullable="false" />
+          <Property Name="CreateTime" Type="DateTime" Nullable="false" />
+          <Property Name="ResolveTime" Type="DateTime" />
+          <NavigationProperty Name="ParentGroup" Relationship="ProcrastinHater.POCOEntities.FK_ChecklistElements_Groups" FromRole="ChecklistElements" ToRole="Groups" />
+          <NavigationProperty Name="PositionInformation" Relationship="ProcrastinHater.POCOEntities.FK_PositionInfoItemID_ChecklistElements" FromRole="ChecklistElements" ToRole="PositionInformation" />
+          <NavigationProperty Name="PositionsNextItemsSet" Relationship="ProcrastinHater.POCOEntities.FK_PositionInfoNextItemID_ChecklistElements" FromRole="ChecklistElements" ToRole="PositionInformation" />
+          <NavigationProperty Name="PositionsPreviousItemsSet" Relationship="ProcrastinHater.POCOEntities.FK_PositionInfoPreviousItemID_ChecklistElements" FromRole="ChecklistElements" ToRole="PositionInformation" />
+        </EntityType>
+        <EntityType Name="DatabaseInfo">
+          <Key>
+            <PropertyRef Name="NextChecklistItemKey" />
+          </Key>
+          <Property Name="NextChecklistItemKey" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Group" BaseType="ProcrastinHater.POCOEntities.ChecklistElement">
+          <Property Name="IsExpanded" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="ChecklistElements" Relationship="ProcrastinHater.POCOEntities.FK_ChecklistElements_Groups" FromRole="Groups" ToRole="ChecklistElements" />
+        </EntityType>
+        <EntityType Name="PositionInformation">
+          <Key>
+            <PropertyRef Name="ItemID" />
+          </Key>
+          <Property Name="ItemID" Type="Int32" Nullable="false" />
+          <Property Name="NextItemID" Type="Int32" />
+          <Property Name="PreviousItemID" Type="Int32" />
+          <NavigationProperty Name="ChecklistElement" Relationship="ProcrastinHater.POCOEntities.FK_PositionInfoItemID_ChecklistElements" FromRole="PositionInformation" ToRole="ChecklistElements" />
+          <NavigationProperty Name="NextItem" Relationship="ProcrastinHater.POCOEntities.FK_PositionInfoNextItemID_ChecklistElements" FromRole="PositionInformation" ToRole="ChecklistElements" />
+          <NavigationProperty Name="PreviousItem" Relationship="ProcrastinHater.POCOEntities.FK_PositionInfoPreviousItemID_ChecklistElements" FromRole="PositionInformation" ToRole="ChecklistElements" />
+        </EntityType>
+        <EntityType Name="Task" BaseType="ProcrastinHater.POCOEntities.ChecklistElement">
+          <Property Name="Details" Type="String" MaxLength="2000" Unicode="true" FixedLength="false" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="DueTime" Type="DateTime" />
+        </EntityType>
+        <Association Name="FK_ChecklistElements_Groups">
+          <End Role="Groups" Type="ProcrastinHater.POCOEntities.Group" Multiplicity="0..1" />
+          <End Role="ChecklistElements" Type="ProcrastinHater.POCOEntities.ChecklistElement" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Groups">
+              <PropertyRef Name="ItemID" />
+            </Principal>
+            <Dependent Role="ChecklistElements">
+              <PropertyRef Name="ParentGroupID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PositionInfoItemID_ChecklistElements">
+          <End Role="ChecklistElements" Type="ProcrastinHater.POCOEntities.ChecklistElement" Multiplicity="1" />
+          <End Role="PositionInformation" Type="ProcrastinHater.POCOEntities.PositionInformation" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="ChecklistElements">
+              <PropertyRef Name="ItemID" />
+            </Principal>
+            <Dependent Role="PositionInformation">
+              <PropertyRef Name="ItemID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PositionInfoNextItemID_ChecklistElements">
+          <End Role="ChecklistElements" Type="ProcrastinHater.POCOEntities.ChecklistElement" Multiplicity="0..1" />
+          <End Role="PositionInformation" Type="ProcrastinHater.POCOEntities.PositionInformation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ChecklistElements">
+              <PropertyRef Name="ItemID" />
+            </Principal>
+            <Dependent Role="PositionInformation">
+              <PropertyRef Name="NextItemID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PositionInfoPreviousItemID_ChecklistElements">
+          <End Role="ChecklistElements" Type="ProcrastinHater.POCOEntities.ChecklistElement" Multiplicity="0..1" />
+          <End Role="PositionInformation" Type="ProcrastinHater.POCOEntities.PositionInformation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ChecklistElements">
+              <PropertyRef Name="ItemID" />
+            </Principal>
+            <Dependent Role="PositionInformation">
+              <PropertyRef Name="PreviousItemID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ProcrastinHaterDataModelStoreContainer" CdmEntityContainer="ProcrastinHaterEntities">
+          <EntitySetMapping Name="ChecklistElements">
+            <EntityTypeMapping TypeName="IsTypeOf(ProcrastinHater.POCOEntities.ChecklistElement)">
+              <MappingFragment StoreEntitySet="ChecklistElements">
+                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+                <ScalarProperty Name="ResolveTime" ColumnName="ResolveTime" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="FontSize" ColumnName="FontSize" />
+                <ScalarProperty Name="FontColor" ColumnName="FontColor" />
+                <ScalarProperty Name="FontName" ColumnName="FontName" />
+                <ScalarProperty Name="BackgroundColor" ColumnName="BackgroundColor" />
+                <ScalarProperty Name="ParentGroupID" ColumnName="ParentGroupID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+            <EntityTypeMapping TypeName="IsTypeOf(ProcrastinHater.POCOEntities.Task)">
+              <MappingFragment StoreEntitySet="Tasks">
+                <ScalarProperty Name="ItemID" ColumnName="TaskID" />
+                <ScalarProperty Name="DueTime" ColumnName="DueTime" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Details" ColumnName="Details" />
+              </MappingFragment>
+            </EntityTypeMapping>
+            <EntityTypeMapping TypeName="IsTypeOf(ProcrastinHater.POCOEntities.Group)">
+              <MappingFragment StoreEntitySet="Groups">
+                <ScalarProperty Name="ItemID" ColumnName="GroupID" />
+                <ScalarProperty Name="IsExpanded" ColumnName="IsExpanded" />
+              </MappingFragment>
+            </EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="DatabaseInfoes"><EntityTypeMapping TypeName="ProcrastinHater.POCOEntities.DatabaseInfo"><MappingFragment StoreEntitySet="DatabaseInfo">
+            <ScalarProperty Name="NextChecklistItemKey" ColumnName="NextChecklistItemKey" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="PositionInformations"><EntityTypeMapping TypeName="ProcrastinHater.POCOEntities.PositionInformation"><MappingFragment StoreEntitySet="PositionInformation">
+            <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+            <ScalarProperty Name="NextItemID" ColumnName="NextItemID" />
+            <ScalarProperty Name="PreviousItemID" ColumnName="PreviousItemID" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+      <Diagram Name="ProcrastinHaterModel">
+        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.ChecklistElement" Width="1.875" PointX="0.5" PointY="2.875" Height="3.4001269531249996" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.DatabaseInfo" Width="1.5" PointX="5.75" PointY="0.75" Height="1.0992643229166674" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.Group" Width="1.5" PointX="3.625" PointY="1.125" Height="1.2636116536458335" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.PositionInformation" Width="1.5" PointX="3" PointY="3.5" Height="1.9210009765624996" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.Task" Width="1.5" PointX="3" PointY="6.125" Height="1.4279589843749996" IsExpanded="true" />
+        <AssociationConnector Association="ProcrastinHater.POCOEntities.FK_ChecklistElements_Groups" ManuallyRouted="false">
+          <ConnectorPoint PointX="3.625" PointY="1.7568058268229168" />
+          <ConnectorPoint PointX="1.4375" PointY="1.7568058268229168" />
+          <ConnectorPoint PointX="1.4375" PointY="2.875" />
+        </AssociationConnector>
+        <AssociationConnector Association="ProcrastinHater.POCOEntities.FK_PositionInfoItemID_ChecklistElements" ManuallyRouted="false">
+          <ConnectorPoint PointX="2.375" PointY="4.46050048828125" />
+          <ConnectorPoint PointX="3" PointY="4.46050048828125" />
+        </AssociationConnector>
+        <AssociationConnector Association="ProcrastinHater.POCOEntities.FK_PositionInfoNextItemID_ChecklistElements" ManuallyRouted="false">
+          <ConnectorPoint PointX="2.375" PointY="3.9177502441406249" />
+          <ConnectorPoint PointX="3" PointY="3.9177502441406249" />
+        </AssociationConnector>
+        <AssociationConnector Association="ProcrastinHater.POCOEntities.FK_PositionInfoPreviousItemID_ChecklistElements" ManuallyRouted="false">
+          <ConnectorPoint PointX="2.375" PointY="5.0032507324218747" />
+          <ConnectorPoint PointX="3" PointY="5.0032507324218747" />
+        </AssociationConnector>
+        <InheritanceConnector EntityType="ProcrastinHater.POCOEntities.Task">
+          <ConnectorPoint PointX="1.4375" PointY="5.9464322916666656" />
+          <ConnectorPoint PointX="1.4375" PointY="6.1964322916666656" />
+          <ConnectorPoint PointX="2.625" PointY="6.1964322916666656" />
+          <ConnectorPoint PointX="2.625" PointY="5.75" />
+          <ConnectorPoint PointX="3.75" PointY="5.75" />
+          <ConnectorPoint PointX="3.75" PointY="6.125" />
+        </InheritanceConnector>
+        <InheritanceConnector EntityType="ProcrastinHater.POCOEntities.Group" ManuallyRouted="false">
+          <ConnectorPoint PointX="1.4375" PointY="2.875" />
+          <ConnectorPoint PointX="1.4375" PointY="2.625" />
+          <ConnectorPoint PointX="4.375" PointY="2.625" />
+          <ConnectorPoint PointX="4.375" PointY="2.3886116536458335" />
+        </InheritanceConnector>
+      </Diagram>
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>

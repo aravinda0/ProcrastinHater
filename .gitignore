@@ -1,0 +1,11 @@
+#gen'd folders
+obj
+bin
+Properties
+
+ProcrastinHater.Test
+WPFTest
+
+ProcrastinHater.DAL/ProcrastinHater.Data.sdf
+ProcrastinHater.DAL/Backup empty database
+
