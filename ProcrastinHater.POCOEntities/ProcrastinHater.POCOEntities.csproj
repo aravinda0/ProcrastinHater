@@ -43,10 +43,10 @@
     <Compile Include="ChecklistElement.cs">
       <DependentUpon>ProcrastinHater.tt</DependentUpon>
     </Compile>
-    <Compile Include="DatabaseInfo.cs">
+    <Compile Include="Group.cs">
       <DependentUpon>ProcrastinHater.tt</DependentUpon>
     </Compile>
-    <Compile Include="Group.cs">
+    <Compile Include="HardSettings.cs">
       <DependentUpon>ProcrastinHater.tt</DependentUpon>
     </Compile>
     <Compile Include="PositionInformation.cs">

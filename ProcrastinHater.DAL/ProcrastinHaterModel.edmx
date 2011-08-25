@@ -4,11 +4,11 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ProcrastinHater.DataModel.Store" Alias="Self" Provider="System.Data.SqlServerCe.3.5" ProviderManifestToken="3.5" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+    <Schema Namespace="ProcrastinHater.DataModel.Store" Alias="Self" Provider="System.Data.SqlServerCe.3.5" ProviderManifestToken="3.5" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
         <EntityContainer Name="ProcrastinHaterDataModelStoreContainer">
           <EntitySet Name="ChecklistElements" EntityType="ProcrastinHater.DataModel.Store.ChecklistElements" store:Type="Tables" />
-          <EntitySet Name="DatabaseInfo" EntityType="ProcrastinHater.DataModel.Store.DatabaseInfo" store:Type="Tables" />
           <EntitySet Name="Groups" EntityType="ProcrastinHater.DataModel.Store.Groups" store:Type="Tables" />
+          <EntitySet Name="HardSettings" EntityType="ProcrastinHater.DataModel.Store.HardSettings" store:Type="Tables" />
           <EntitySet Name="PositionInformation" EntityType="ProcrastinHater.DataModel.Store.PositionInformation" store:Type="Tables" />
           <EntitySet Name="Tasks" EntityType="ProcrastinHater.DataModel.Store.Tasks" store:Type="Tables" />
           <AssociationSet Name="FK_ChecklistElements_Groups" Association="ProcrastinHater.DataModel.Store.FK_ChecklistElements_Groups">
@@ -50,18 +50,20 @@
           <Property Name="CreateTime" Type="datetime" Nullable="false" />
           <Property Name="ResolveTime" Type="datetime" />
         </EntityType>
-        <EntityType Name="DatabaseInfo">
-          <Key>
-            <PropertyRef Name="NextChecklistItemKey" />
-          </Key>
-          <Property Name="NextChecklistItemKey" Type="int" Nullable="false" />
-        </EntityType>
         <EntityType Name="Groups">
           <Key>
             <PropertyRef Name="GroupID" />
           </Key>
           <Property Name="GroupID" Type="int" Nullable="false" />
           <Property Name="IsExpanded" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="HardSettings">
+          <Key>
+            <PropertyRef Name="Check" />
+          </Key>
+          <Property Name="NextChecklistElementsKey" Type="int" />
+          <Property Name="DaysOfHistoryToShow" Type="int" />
+          <Property Name="Check" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="PositionInformation">
           <Key>
@@ -152,14 +154,12 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ProcrastinHater.POCOEntities" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
         <EntityContainer Name="ProcrastinHaterEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="ChecklistElements" EntityType="ProcrastinHater.POCOEntities.ChecklistElement" />
-          <EntitySet Name="DatabaseInfoes" EntityType="ProcrastinHater.POCOEntities.DatabaseInfo" />
           <EntitySet Name="PositionInformations" EntityType="ProcrastinHater.POCOEntities.PositionInformation" />
           <AssociationSet Name="FK_ChecklistElements_Groups" Association="ProcrastinHater.POCOEntities.FK_ChecklistElements_Groups">
             <End Role="Groups" EntitySet="ChecklistElements" />
@@ -177,6 +177,7 @@
             <End Role="ChecklistElements" EntitySet="ChecklistElements" />
             <End Role="PositionInformation" EntitySet="PositionInformations" />
           </AssociationSet>
+          <EntitySet Name="HardSettingsSet" EntityType="ProcrastinHater.POCOEntities.HardSettings" />
         </EntityContainer>
         <EntityType Name="ChecklistElement" Abstract="true">
           <Key>
@@ -195,12 +196,6 @@
           <NavigationProperty Name="PositionInformation" Relationship="ProcrastinHater.POCOEntities.FK_PositionInfoItemID_ChecklistElements" FromRole="ChecklistElements" ToRole="PositionInformation" />
           <NavigationProperty Name="PositionsNextItemsSet" Relationship="ProcrastinHater.POCOEntities.FK_PositionInfoNextItemID_ChecklistElements" FromRole="ChecklistElements" ToRole="PositionInformation" />
           <NavigationProperty Name="PositionsPreviousItemsSet" Relationship="ProcrastinHater.POCOEntities.FK_PositionInfoPreviousItemID_ChecklistElements" FromRole="ChecklistElements" ToRole="PositionInformation" />
-        </EntityType>
-        <EntityType Name="DatabaseInfo">
-          <Key>
-            <PropertyRef Name="NextChecklistItemKey" />
-          </Key>
-          <Property Name="NextChecklistItemKey" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Group" BaseType="ProcrastinHater.POCOEntities.ChecklistElement">
           <Property Name="IsExpanded" Type="Boolean" Nullable="false" />
@@ -270,6 +265,14 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="HardSettings">
+          <Key>
+            <PropertyRef Name="Check" />
+          </Key>
+          <Property Type="Int32" Name="NextChecklistElementsKey" />
+          <Property Type="Int32" Name="DaysOfHistoryToShow" />
+          <Property Type="Boolean" Name="Check" Nullable="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -304,14 +307,20 @@
                 <ScalarProperty Name="IsExpanded" ColumnName="IsExpanded" />
               </MappingFragment>
             </EntityTypeMapping></EntitySetMapping>
-          <EntitySetMapping Name="DatabaseInfoes"><EntityTypeMapping TypeName="ProcrastinHater.POCOEntities.DatabaseInfo"><MappingFragment StoreEntitySet="DatabaseInfo">
-            <ScalarProperty Name="NextChecklistItemKey" ColumnName="NextChecklistItemKey" />
-          </MappingFragment></EntityTypeMapping></EntitySetMapping>
           <EntitySetMapping Name="PositionInformations"><EntityTypeMapping TypeName="ProcrastinHater.POCOEntities.PositionInformation"><MappingFragment StoreEntitySet="PositionInformation">
             <ScalarProperty Name="ItemID" ColumnName="ItemID" />
             <ScalarProperty Name="NextItemID" ColumnName="NextItemID" />
             <ScalarProperty Name="PreviousItemID" ColumnName="PreviousItemID" />
           </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="HardSettingsSet">
+            <EntityTypeMapping TypeName="ProcrastinHater.POCOEntities.HardSettings">
+              <MappingFragment StoreEntitySet="HardSettings">
+                <ScalarProperty Name="Check" ColumnName="Check" />
+                <ScalarProperty Name="DaysOfHistoryToShow" ColumnName="DaysOfHistoryToShow" />
+                <ScalarProperty Name="NextChecklistElementsKey" ColumnName="NextChecklistElementsKey" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -335,7 +344,6 @@
     <Diagrams>
       <Diagram Name="ProcrastinHaterModel">
         <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.ChecklistElement" Width="1.875" PointX="0.5" PointY="2.875" Height="3.4001269531249996" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.DatabaseInfo" Width="1.5" PointX="5.75" PointY="0.75" Height="1.0992643229166674" IsExpanded="true" />
         <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.Group" Width="1.5" PointX="3.625" PointY="1.125" Height="1.2636116536458335" IsExpanded="true" />
         <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.PositionInformation" Width="1.5" PointX="3" PointY="3.5" Height="1.9210009765624996" IsExpanded="true" />
         <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.Task" Width="1.5" PointX="3" PointY="6.125" Height="1.4279589843749996" IsExpanded="true" />
@@ -370,6 +378,7 @@
           <ConnectorPoint PointX="4.375" PointY="2.625" />
           <ConnectorPoint PointX="4.375" PointY="2.3886116536458335" />
         </InheritanceConnector>
+        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.HardSettings" Width="1.5" PointX="5.375" PointY="3.75" Height="1.4279589843749996" />
       </Diagram>
     </Diagrams>
   </Designer>
