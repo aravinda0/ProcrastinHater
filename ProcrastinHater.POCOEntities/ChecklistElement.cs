@@ -56,19 +56,7 @@ namespace ProcrastinHater.POCOEntities
         }
         private Nullable<int> _parentGroupID;
     
-        public virtual string BackgroundColor
-        {
-            get;
-            set;
-        }
-    
         public virtual string FontName
-        {
-            get;
-            set;
-        }
-    
-        public virtual string FontColor
         {
             get;
             set;
@@ -91,6 +79,20 @@ namespace ProcrastinHater.POCOEntities
             get;
             set;
         }
+    
+        public virtual string FontColor
+        {
+            get { return _fontColor; }
+            set { _fontColor = value; }
+        }
+        private string _fontColor = "#FF000000";
+    
+        public virtual string BackgroundColor
+        {
+            get { return _backgroundColor; }
+            set { _backgroundColor = value; }
+        }
+        private string _backgroundColor = "#FFFFFFFF";
 
         #endregion
         #region Navigation Properties

@@ -43,12 +43,12 @@
           <Property Name="ItemID" Type="int" Nullable="false" />
           <Property Name="Title" Type="nvarchar" Nullable="false" MaxLength="800" />
           <Property Name="ParentGroupID" Type="int" />
-          <Property Name="BackgroundColor" Type="nvarchar" Nullable="false" MaxLength="100" />
           <Property Name="FontName" Type="nvarchar" Nullable="false" MaxLength="200" />
-          <Property Name="FontColor" Type="nvarchar" Nullable="false" MaxLength="100" />
           <Property Name="FontSize" Type="float" Nullable="false" />
           <Property Name="CreateTime" Type="datetime" Nullable="false" />
           <Property Name="ResolveTime" Type="datetime" />
+          <Property Name="FontColor" Type="nvarchar" Nullable="false" MaxLength="9" />
+          <Property Name="BackgroundColor" Type="nvarchar" Nullable="false" MaxLength="9" />
         </EntityType>
         <EntityType Name="Groups">
           <Key>
@@ -186,9 +186,7 @@
           <Property Name="ItemID" Type="Int32" Nullable="false" />
           <Property Name="Title" Type="String" Nullable="false" MaxLength="800" Unicode="true" FixedLength="false" />
           <Property Name="ParentGroupID" Type="Int32" />
-          <Property Name="BackgroundColor" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
           <Property Name="FontName" Type="String" Nullable="false" MaxLength="200" Unicode="true" FixedLength="false" />
-          <Property Name="FontColor" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
           <Property Name="FontSize" Type="Double" Nullable="false" />
           <Property Name="CreateTime" Type="DateTime" Nullable="false" />
           <Property Name="ResolveTime" Type="DateTime" />
@@ -196,6 +194,8 @@
           <NavigationProperty Name="PositionInformation" Relationship="ProcrastinHater.POCOEntities.FK_PositionInfoItemID_ChecklistElements" FromRole="ChecklistElements" ToRole="PositionInformation" />
           <NavigationProperty Name="PositionsNextItemsSet" Relationship="ProcrastinHater.POCOEntities.FK_PositionInfoNextItemID_ChecklistElements" FromRole="ChecklistElements" ToRole="PositionInformation" />
           <NavigationProperty Name="PositionsPreviousItemsSet" Relationship="ProcrastinHater.POCOEntities.FK_PositionInfoPreviousItemID_ChecklistElements" FromRole="ChecklistElements" ToRole="PositionInformation" />
+          <Property Type="String" Name="FontColor" Nullable="false" MaxLength="9" Unicode="true" FixedLength="false" DefaultValue="#FF000000" />
+          <Property Type="String" Name="BackgroundColor" Nullable="false" MaxLength="9" Unicode="true" FixedLength="false" DefaultValue="#FFFFFFFF" />
         </EntityType>
         <EntityType Name="Group" BaseType="ProcrastinHater.POCOEntities.ChecklistElement">
           <Property Name="IsExpanded" Type="Boolean" Nullable="false" />
@@ -282,13 +282,13 @@
           <EntitySetMapping Name="ChecklistElements">
             <EntityTypeMapping TypeName="IsTypeOf(ProcrastinHater.POCOEntities.ChecklistElement)">
               <MappingFragment StoreEntitySet="ChecklistElements">
+                <ScalarProperty Name="BackgroundColor" ColumnName="BackgroundColor" />
+                <ScalarProperty Name="FontColor" ColumnName="FontColor" />
                 <ScalarProperty Name="ItemID" ColumnName="ItemID" />
                 <ScalarProperty Name="ResolveTime" ColumnName="ResolveTime" />
                 <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
                 <ScalarProperty Name="FontSize" ColumnName="FontSize" />
-                <ScalarProperty Name="FontColor" ColumnName="FontColor" />
                 <ScalarProperty Name="FontName" ColumnName="FontName" />
-                <ScalarProperty Name="BackgroundColor" ColumnName="BackgroundColor" />
                 <ScalarProperty Name="ParentGroupID" ColumnName="ParentGroupID" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
               </MappingFragment>
@@ -343,14 +343,14 @@
     <!-- Diagram content (shape and connector positions) -->
     <Diagrams>
       <Diagram Name="ProcrastinHaterModel">
-        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.ChecklistElement" Width="1.875" PointX="0.5" PointY="2.875" Height="3.4001269531249996" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.ChecklistElement" Width="1.875" PointX="0.5" PointY="2.875" Height="3.0714322916666665" IsExpanded="true" />
         <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.Group" Width="1.5" PointX="3.625" PointY="1.125" Height="1.2636116536458335" IsExpanded="true" />
         <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.PositionInformation" Width="1.5" PointX="3" PointY="3.5" Height="1.9210009765624996" IsExpanded="true" />
         <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.Task" Width="1.5" PointX="3" PointY="6.125" Height="1.4279589843749996" IsExpanded="true" />
         <AssociationConnector Association="ProcrastinHater.POCOEntities.FK_ChecklistElements_Groups" ManuallyRouted="false">
           <ConnectorPoint PointX="3.625" PointY="1.7568058268229168" />
-          <ConnectorPoint PointX="1.4375" PointY="1.7568058268229168" />
-          <ConnectorPoint PointX="1.4375" PointY="2.875" />
+          <ConnectorPoint PointX="1.9375025" PointY="1.7568058268229168" />
+          <ConnectorPoint PointX="1.9375025" PointY="2.875" />
         </AssociationConnector>
         <AssociationConnector Association="ProcrastinHater.POCOEntities.FK_PositionInfoItemID_ChecklistElements" ManuallyRouted="false">
           <ConnectorPoint PointX="2.375" PointY="4.46050048828125" />
@@ -364,10 +364,10 @@
           <ConnectorPoint PointX="2.375" PointY="5.0032507324218747" />
           <ConnectorPoint PointX="3" PointY="5.0032507324218747" />
         </AssociationConnector>
-        <InheritanceConnector EntityType="ProcrastinHater.POCOEntities.Task">
-          <ConnectorPoint PointX="1.4375" PointY="5.9464322916666656" />
-          <ConnectorPoint PointX="1.4375" PointY="6.1964322916666656" />
-          <ConnectorPoint PointX="2.625" PointY="6.1964322916666656" />
+        <InheritanceConnector EntityType="ProcrastinHater.POCOEntities.Task" ManuallyRouted="false">
+          <ConnectorPoint PointX="1.4375" PointY="5.9464322916666665" />
+          <ConnectorPoint PointX="1.4375" PointY="6.1964322916666674" />
+          <ConnectorPoint PointX="2.625" PointY="6.1964322916666674" />
           <ConnectorPoint PointX="2.625" PointY="5.75" />
           <ConnectorPoint PointX="3.75" PointY="5.75" />
           <ConnectorPoint PointX="3.75" PointY="6.125" />
@@ -375,6 +375,8 @@
         <InheritanceConnector EntityType="ProcrastinHater.POCOEntities.Group" ManuallyRouted="false">
           <ConnectorPoint PointX="1.4375" PointY="2.875" />
           <ConnectorPoint PointX="1.4375" PointY="2.625" />
+          <ConnectorPoint PointX="1.8541691666666667" PointY="2.6249999999999996" />
+          <ConnectorPoint PointX="2.0208358333333334" PointY="2.625" />
           <ConnectorPoint PointX="4.375" PointY="2.625" />
           <ConnectorPoint PointX="4.375" PointY="2.3886116536458335" />
         </InheritanceConnector>
