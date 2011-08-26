@@ -36,7 +36,7 @@ namespace ProcrastinHater.BLL
 			
 		}
 		
-		public bool AddItem(Task newItem, out string err)
+		public bool AddNewItem(Task newItem, out string err)
 		{
 			throw new NotImplementedException();
 		}

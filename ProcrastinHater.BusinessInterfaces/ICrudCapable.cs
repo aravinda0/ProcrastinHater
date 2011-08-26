@@ -9,7 +9,7 @@ namespace ProcrastinHater.BusinessInterfaces
 	public interface ICrudCapable<T>
 	{
 		T GetItemById(int id);
-		bool AddItem(T newItem, out string err);
+		bool AddNewItem(T newItem, out string err);
 		bool DeleteItem(int id, out string err);
 		bool UpdateItem(int id, T newItem, out string err);
 				
