@@ -68,12 +68,6 @@ namespace ProcrastinHater.POCOEntities
             set;
         }
     
-        public virtual System.DateTime CreateTime
-        {
-            get;
-            set;
-        }
-    
         public virtual Nullable<System.DateTime> ResolveTime
         {
             get;
@@ -93,6 +87,12 @@ namespace ProcrastinHater.POCOEntities
             set { _backgroundColor = value; }
         }
         private string _backgroundColor = "#FFFFFFFF";
+    
+        public virtual System.DateTime BeginTime
+        {
+            get;
+            set;
+        }
 
         #endregion
         #region Navigation Properties

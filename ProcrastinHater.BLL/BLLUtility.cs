@@ -1,7 +1,6 @@
 ﻿
 using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using ProcrastinHater.POCOEntities;
 
 namespace ProcrastinHater.BLL
@@ -46,11 +45,11 @@ namespace ProcrastinHater.BLL
 			if (bgColErr != null)
 				errors += bgColErr + "\n";
 			
-			string createTimeErr = ValidateCreateTime(item.CreateTime);
+			string createTimeErr = ValidateBeginTime(item.BeginTime);
 			if (createTimeErr != null)
 				errors += createTimeErr + "\n";
 			
-			string resolveTimeErr = ValidateResolveTime(item.CreateTime, item.ResolveTime);
+			string resolveTimeErr = ValidateResolveTime(item.BeginTime, item.ResolveTime);
 			if (resolveTimeErr != null)
 				errors += resolveTimeErr + "\n";
 			
@@ -81,14 +80,15 @@ namespace ProcrastinHater.BLL
 		{
 			string err = null;
 			
-			if (color.Length != 9 || Regex.Match(color, @"#[\da-f]{8}$", 
-			                                     RegexOptions.IgnoreCase).Success == false)
+			//Full namespace specified cuz of ambiguity of type 'Group' used in ValidateParentGroupId() 
+			if (color.Length != 9 || System.Text.RegularExpressions.Regex.Match(color, @"#[\da-f]{8}$", 
+			                                     System.Text.RegularExpressions.RegexOptions.IgnoreCase).Success == false)
 				err = "The color must be a 9-character string of the format #XXXXXXXX.";
 
 			return err;
 		}
 		
-		private static string ValidateCreateTime(DateTime createTime)
+		private static string ValidateBeginTime(DateTime createTime)
 		{
 			string err = null;
 			
@@ -122,6 +122,23 @@ namespace ProcrastinHater.BLL
 			return err;
 		}
 		
+		private static string ValidateParentGroupId(ProcrastinHaterEntities context,
+		                                            int? id)
+		{
+			string err = null;
+			
+			if (id != null)
+			{
+				Group parent = (from g in context.ChecklistElements.OfType<Group>()
+				                where g.ItemID == id
+				                select g).SingleOrDefault();
+				
+				if (parent == null)
+					err = "No group exists with the provided ParentGroupID.\n";
+			}			
+			
+			return err;
+		}
 		//TODO: Validate FontName. 
 
 		

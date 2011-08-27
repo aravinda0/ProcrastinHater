@@ -45,10 +45,10 @@
           <Property Name="ParentGroupID" Type="int" />
           <Property Name="FontName" Type="nvarchar" Nullable="false" MaxLength="200" />
           <Property Name="FontSize" Type="float" Nullable="false" />
-          <Property Name="CreateTime" Type="datetime" Nullable="false" />
           <Property Name="ResolveTime" Type="datetime" />
           <Property Name="FontColor" Type="nvarchar" Nullable="false" MaxLength="9" />
           <Property Name="BackgroundColor" Type="nvarchar" Nullable="false" MaxLength="9" />
+          <Property Name="BeginTime" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="Groups">
           <Key>
@@ -188,7 +188,6 @@
           <Property Name="ParentGroupID" Type="Int32" />
           <Property Name="FontName" Type="String" Nullable="false" MaxLength="200" Unicode="true" FixedLength="false" />
           <Property Name="FontSize" Type="Double" Nullable="false" />
-          <Property Name="CreateTime" Type="DateTime" Nullable="false" />
           <Property Name="ResolveTime" Type="DateTime" />
           <NavigationProperty Name="ParentGroup" Relationship="ProcrastinHater.POCOEntities.FK_ChecklistElements_Groups" FromRole="ChecklistElements" ToRole="Groups" />
           <NavigationProperty Name="PositionInformation" Relationship="ProcrastinHater.POCOEntities.FK_PositionInfoItemID_ChecklistElements" FromRole="ChecklistElements" ToRole="PositionInformation" />
@@ -196,6 +195,7 @@
           <NavigationProperty Name="PositionsPreviousItemsSet" Relationship="ProcrastinHater.POCOEntities.FK_PositionInfoPreviousItemID_ChecklistElements" FromRole="ChecklistElements" ToRole="PositionInformation" />
           <Property Type="String" Name="FontColor" Nullable="false" MaxLength="9" Unicode="true" FixedLength="false" DefaultValue="#FF000000" />
           <Property Type="String" Name="BackgroundColor" Nullable="false" MaxLength="9" Unicode="true" FixedLength="false" DefaultValue="#FFFFFFFF" />
+          <Property Type="DateTime" Name="BeginTime" Nullable="false" />
         </EntityType>
         <EntityType Name="Group" BaseType="ProcrastinHater.POCOEntities.ChecklistElement">
           <Property Name="IsExpanded" Type="Boolean" Nullable="false" />
@@ -282,11 +282,11 @@
           <EntitySetMapping Name="ChecklistElements">
             <EntityTypeMapping TypeName="IsTypeOf(ProcrastinHater.POCOEntities.ChecklistElement)">
               <MappingFragment StoreEntitySet="ChecklistElements">
+                <ScalarProperty Name="BeginTime" ColumnName="BeginTime" />
                 <ScalarProperty Name="BackgroundColor" ColumnName="BackgroundColor" />
                 <ScalarProperty Name="FontColor" ColumnName="FontColor" />
                 <ScalarProperty Name="ItemID" ColumnName="ItemID" />
                 <ScalarProperty Name="ResolveTime" ColumnName="ResolveTime" />
-                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
                 <ScalarProperty Name="FontSize" ColumnName="FontSize" />
                 <ScalarProperty Name="FontName" ColumnName="FontName" />
                 <ScalarProperty Name="ParentGroupID" ColumnName="ParentGroupID" />
