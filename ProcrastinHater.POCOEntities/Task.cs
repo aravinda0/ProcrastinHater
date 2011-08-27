@@ -25,22 +25,137 @@ namespace ProcrastinHater.POCOEntities
             set;
         }
     
-        public virtual int Status
+        public virtual int StatusID
         {
-            get;
-            set;
+            get { return _statusID; }
+            set
+            {
+                try
+                {
+                    _settingFK = true;
+                    if (_statusID != value)
+                    {
+                        if (Status != null && Status.StatusID != value)
+                        {
+                            Status = null;
+                        }
+                        _statusID = value;
+                    }
+                }
+                finally
+                {
+                    _settingFK = false;
+                }
+            }
         }
+        private int _statusID;
     
-        public virtual Nullable<System.DateTime> DueTime
+        public virtual Nullable<int> TimedTaskSettingsID
         {
-            get;
-            set;
+            get { return _timedTaskSettingsID; }
+            set
+            {
+                try
+                {
+                    _settingFK = true;
+                    if (_timedTaskSettingsID != value)
+                    {
+                        if (TimedTaskSetting != null && TimedTaskSetting.TaskID != value)
+                        {
+                            TimedTaskSetting = null;
+                        }
+                        _timedTaskSettingsID = value;
+                    }
+                }
+                finally
+                {
+                    _settingFK = false;
+                }
+            }
         }
+        private Nullable<int> _timedTaskSettingsID;
+
+        #endregion
+        #region Navigation Properties
+    
+        public virtual Status Status
+        {
+            get { return _status; }
+            set
+            {
+                if (!ReferenceEquals(_status, value))
+                {
+                    var previousValue = _status;
+                    _status = value;
+                    FixupStatus(previousValue);
+                }
+            }
+        }
+        private Status _status;
+    
+        public virtual TimedTaskSetting TimedTaskSetting
+        {
+            get { return _timedTaskSetting; }
+            set
+            {
+                if (!ReferenceEquals(_timedTaskSetting, value))
+                {
+                    var previousValue = _timedTaskSetting;
+                    _timedTaskSetting = value;
+                    FixupTimedTaskSetting(previousValue);
+                }
+            }
+        }
+        private TimedTaskSetting _timedTaskSetting;
 
         #endregion
         #region Association Fixup
     
         private bool _settingFK = false;
+    
+        private void FixupStatus(Status previousValue)
+        {
+            if (previousValue != null && previousValue.Tasks.Contains(this))
+            {
+                previousValue.Tasks.Remove(this);
+            }
+    
+            if (Status != null)
+            {
+                if (!Status.Tasks.Contains(this))
+                {
+                    Status.Tasks.Add(this);
+                }
+                if (StatusID != Status.StatusID)
+                {
+                    StatusID = Status.StatusID;
+                }
+            }
+        }
+    
+        private void FixupTimedTaskSetting(TimedTaskSetting previousValue)
+        {
+            if (previousValue != null && previousValue.Tasks.Contains(this))
+            {
+                previousValue.Tasks.Remove(this);
+            }
+    
+            if (TimedTaskSetting != null)
+            {
+                if (!TimedTaskSetting.Tasks.Contains(this))
+                {
+                    TimedTaskSetting.Tasks.Add(this);
+                }
+                if (TimedTaskSettingsID != TimedTaskSetting.TaskID)
+                {
+                    TimedTaskSettingsID = TimedTaskSetting.TaskID;
+                }
+            }
+            else if (!_settingFK)
+            {
+                TimedTaskSettingsID = null;
+            }
+        }
 
         #endregion
     }

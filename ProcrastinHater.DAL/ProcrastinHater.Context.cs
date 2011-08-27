@@ -59,6 +59,24 @@ namespace ProcrastinHater.POCOEntities
             get { return _hardSettingsSet  ?? (_hardSettingsSet = CreateObjectSet<HardSettings>("HardSettingsSet")); }
         }
         private ObjectSet<HardSettings> _hardSettingsSet;
+    
+        public ObjectSet<Status> Status
+        {
+            get { return _status  ?? (_status = CreateObjectSet<Status>("Status")); }
+        }
+        private ObjectSet<Status> _status;
+    
+        public ObjectSet<TimedTaskSetting> TimedTaskSettings
+        {
+            get { return _timedTaskSettings  ?? (_timedTaskSettings = CreateObjectSet<TimedTaskSetting>("TimedTaskSettings")); }
+        }
+        private ObjectSet<TimedTaskSetting> _timedTaskSettings;
+    
+        public ObjectSet<TimeoutAction> TimeoutActions
+        {
+            get { return _timeoutActions  ?? (_timeoutActions = CreateObjectSet<TimeoutAction>("TimeoutActions")); }
+        }
+        private ObjectSet<TimeoutAction> _timeoutActions;
 
         #endregion
     }

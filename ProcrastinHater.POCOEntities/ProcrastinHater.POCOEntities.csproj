@@ -58,7 +58,16 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Status.cs">
+      <DependentUpon>ProcrastinHater.tt</DependentUpon>
+    </Compile>
     <Compile Include="Task.cs">
+      <DependentUpon>ProcrastinHater.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TimedTaskSetting.cs">
+      <DependentUpon>ProcrastinHater.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TimeoutAction.cs">
       <DependentUpon>ProcrastinHater.tt</DependentUpon>
     </Compile>
   </ItemGroup>
