@@ -57,6 +57,10 @@ namespace ProcrastinHater.BLL
 			if (fontSizeErr != null)
 				errors += fontSizeErr + "\n";
 			
+			string parentGroupIdErr = ValidateParentGroupId(context, item.ParentGroupID);
+			if (parentGroupIdErr != null)
+				errors += parentGroupIdErr + "\n";
+			
 			
 			if (string.IsNullOrEmpty(errors))
 				return true;
