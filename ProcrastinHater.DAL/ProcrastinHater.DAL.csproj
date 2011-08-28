@@ -101,11 +101,6 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ProcrastinHater.Data.sdf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <EntityDeploy Include="ProcrastinHaterModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>ProcrastinHaterModel.Designer.cs</LastGenOutput>
@@ -124,6 +119,11 @@
       <Project>{BB646C68-78B2-402F-BCDD-1AF09F3621A6}</Project>
       <Name>ProcrastinHater.POCOEntities</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ProcrastinHater.Data.sdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

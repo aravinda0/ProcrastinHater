@@ -4,4 +4,5 @@ It uses SQL Server CE to store its data.
 It's mostly just a practice project.
 
 Important:
-The app.config files currently have the absolute path to the database stored. For development purposes. Remember to change it to appropriate value.
+The App.config file points to C:\ProcrastinHater.Data.sdf. So copy said file from the ProcrastinHater.DAL project folder to that location for development purposes.
+For release builds, uncomment the line in the App.config file that points to |DataDirectory|.
