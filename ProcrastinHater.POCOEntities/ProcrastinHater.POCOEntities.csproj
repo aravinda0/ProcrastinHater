@@ -64,7 +64,7 @@
     <Compile Include="Task.cs">
       <DependentUpon>ProcrastinHater.tt</DependentUpon>
     </Compile>
-    <Compile Include="TimedTaskSetting.cs">
+    <Compile Include="TimedTaskSettings.cs">
       <DependentUpon>ProcrastinHater.tt</DependentUpon>
     </Compile>
     <Compile Include="TimeoutAction.cs">

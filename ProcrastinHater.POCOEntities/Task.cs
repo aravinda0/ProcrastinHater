@@ -60,9 +60,9 @@ namespace ProcrastinHater.POCOEntities
                     _settingFK = true;
                     if (_timedTaskSettingsID != value)
                     {
-                        if (TimedTaskSetting != null && TimedTaskSetting.TaskID != value)
+                        if (TimedTaskSettings != null && TimedTaskSettings.TimedTaskSettingsID != value)
                         {
-                            TimedTaskSetting = null;
+                            TimedTaskSettings = null;
                         }
                         _timedTaskSettingsID = value;
                     }
@@ -93,20 +93,20 @@ namespace ProcrastinHater.POCOEntities
         }
         private Status _status;
     
-        public virtual TimedTaskSetting TimedTaskSetting
+        public virtual TimedTaskSettings TimedTaskSettings
         {
-            get { return _timedTaskSetting; }
+            get { return _timedTaskSettings; }
             set
             {
-                if (!ReferenceEquals(_timedTaskSetting, value))
+                if (!ReferenceEquals(_timedTaskSettings, value))
                 {
-                    var previousValue = _timedTaskSetting;
-                    _timedTaskSetting = value;
-                    FixupTimedTaskSetting(previousValue);
+                    var previousValue = _timedTaskSettings;
+                    _timedTaskSettings = value;
+                    FixupTimedTaskSettings(previousValue);
                 }
             }
         }
-        private TimedTaskSetting _timedTaskSetting;
+        private TimedTaskSettings _timedTaskSettings;
 
         #endregion
         #region Association Fixup
@@ -133,22 +133,22 @@ namespace ProcrastinHater.POCOEntities
             }
         }
     
-        private void FixupTimedTaskSetting(TimedTaskSetting previousValue)
+        private void FixupTimedTaskSettings(TimedTaskSettings previousValue)
         {
             if (previousValue != null && previousValue.Tasks.Contains(this))
             {
                 previousValue.Tasks.Remove(this);
             }
     
-            if (TimedTaskSetting != null)
+            if (TimedTaskSettings != null)
             {
-                if (!TimedTaskSetting.Tasks.Contains(this))
+                if (!TimedTaskSettings.Tasks.Contains(this))
                 {
-                    TimedTaskSetting.Tasks.Add(this);
+                    TimedTaskSettings.Tasks.Add(this);
                 }
-                if (TimedTaskSettingsID != TimedTaskSetting.TaskID)
+                if (TimedTaskSettingsID != TimedTaskSettings.TimedTaskSettingsID)
                 {
-                    TimedTaskSettingsID = TimedTaskSetting.TaskID;
+                    TimedTaskSettingsID = TimedTaskSettings.TimedTaskSettingsID;
                 }
             }
             else if (!_settingFK)

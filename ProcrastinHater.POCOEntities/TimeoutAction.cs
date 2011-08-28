@@ -34,46 +34,46 @@ namespace ProcrastinHater.POCOEntities
         #endregion
         #region Navigation Properties
     
-        public virtual ICollection<TimedTaskSetting> TimedTaskSettings
+        public virtual ICollection<TimedTaskSettings> TimedTaskSettingsSet
         {
             get
             {
-                if (_timedTaskSettings == null)
+                if (_timedTaskSettingsSet == null)
                 {
-                    var newCollection = new FixupCollection<TimedTaskSetting>();
-                    newCollection.CollectionChanged += FixupTimedTaskSettings;
-                    _timedTaskSettings = newCollection;
+                    var newCollection = new FixupCollection<TimedTaskSettings>();
+                    newCollection.CollectionChanged += FixupTimedTaskSettingsSet;
+                    _timedTaskSettingsSet = newCollection;
                 }
-                return _timedTaskSettings;
+                return _timedTaskSettingsSet;
             }
             set
             {
-                if (!ReferenceEquals(_timedTaskSettings, value))
+                if (!ReferenceEquals(_timedTaskSettingsSet, value))
                 {
-                    var previousValue = _timedTaskSettings as FixupCollection<TimedTaskSetting>;
+                    var previousValue = _timedTaskSettingsSet as FixupCollection<TimedTaskSettings>;
                     if (previousValue != null)
                     {
-                        previousValue.CollectionChanged -= FixupTimedTaskSettings;
+                        previousValue.CollectionChanged -= FixupTimedTaskSettingsSet;
                     }
-                    _timedTaskSettings = value;
-                    var newValue = value as FixupCollection<TimedTaskSetting>;
+                    _timedTaskSettingsSet = value;
+                    var newValue = value as FixupCollection<TimedTaskSettings>;
                     if (newValue != null)
                     {
-                        newValue.CollectionChanged += FixupTimedTaskSettings;
+                        newValue.CollectionChanged += FixupTimedTaskSettingsSet;
                     }
                 }
             }
         }
-        private ICollection<TimedTaskSetting> _timedTaskSettings;
+        private ICollection<TimedTaskSettings> _timedTaskSettingsSet;
 
         #endregion
         #region Association Fixup
     
-        private void FixupTimedTaskSettings(object sender, NotifyCollectionChangedEventArgs e)
+        private void FixupTimedTaskSettingsSet(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.NewItems != null)
             {
-                foreach (TimedTaskSetting item in e.NewItems)
+                foreach (TimedTaskSettings item in e.NewItems)
                 {
                     item.TimeoutAction = this;
                 }
@@ -81,7 +81,7 @@ namespace ProcrastinHater.POCOEntities
     
             if (e.OldItems != null)
             {
-                foreach (TimedTaskSetting item in e.OldItems)
+                foreach (TimedTaskSettings item in e.OldItems)
                 {
                     if (ReferenceEquals(item.TimeoutAction, this))
                     {

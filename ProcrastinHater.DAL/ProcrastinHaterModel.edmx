@@ -106,11 +106,11 @@
         </EntityType>
         <EntityType Name="TimedTaskSettings">
           <Key>
-            <PropertyRef Name="TaskID" />
+            <PropertyRef Name="TimedTaskSettingsID" />
           </Key>
-          <Property Name="TaskID" Type="int" Nullable="false" />
           <Property Name="TimeoutActionID" Type="int" Nullable="false" />
           <Property Name="DueTime" Type="datetime" Nullable="false" />
+          <Property Name="TimedTaskSettingsID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="TimeoutActions">
           <Key>
@@ -208,7 +208,7 @@
           <End Role="Tasks" Type="ProcrastinHater.DataModel.Store.Tasks" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="TimedTaskSettings">
-              <PropertyRef Name="TaskID" />
+              <PropertyRef Name="TimedTaskSettingsID" />
             </Principal>
             <Dependent Role="Tasks">
               <PropertyRef Name="TimedTaskSettingsID" />
@@ -252,19 +252,19 @@
           </AssociationSet>
           <EntitySet Name="HardSettingsSet" EntityType="ProcrastinHater.POCOEntities.HardSettings" />
           <EntitySet Name="Status" EntityType="ProcrastinHater.POCOEntities.Status" />
-          <EntitySet Name="TimedTaskSettings" EntityType="ProcrastinHater.POCOEntities.TimedTaskSetting" />
+          <EntitySet Name="TimedTaskSettingsSet" EntityType="ProcrastinHater.POCOEntities.TimedTaskSettings" />
           <EntitySet Name="TimeoutActions" EntityType="ProcrastinHater.POCOEntities.TimeoutAction" />
           <AssociationSet Name="FK_Status_Tasks" Association="ProcrastinHater.POCOEntities.FK_Status_Tasks">
             <End Role="Status" EntitySet="Status" />
             <End Role="Task" EntitySet="ChecklistElements" />
           </AssociationSet>
-          <AssociationSet Name="FK_TimedTaskSettings_Tasks" Association="ProcrastinHater.POCOEntities.FK_TimedTaskSettings_Tasks">
-            <End Role="TimedTaskSetting" EntitySet="TimedTaskSettings" />
-            <End Role="Task" EntitySet="ChecklistElements" />
-          </AssociationSet>
           <AssociationSet Name="FK_TimeoutActions_TimedTaskSettings" Association="ProcrastinHater.POCOEntities.FK_TimeoutActions_TimedTaskSettings">
             <End Role="TimeoutAction" EntitySet="TimeoutActions" />
-            <End Role="TimedTaskSetting" EntitySet="TimedTaskSettings" />
+            <End Role="TimedTaskSetting" EntitySet="TimedTaskSettingsSet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TimedTaskSettings_Tasks1" Association="ProcrastinHater.POCOEntities.FK_TimedTaskSettings_Tasks1">
+            <End Role="TimedTaskSetting" EntitySet="TimedTaskSettingsSet" />
+            <End Role="Task" EntitySet="ChecklistElements" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="ChecklistElement" Abstract="true">
@@ -305,7 +305,7 @@
           <Property Type="Int32" Name="StatusID" Nullable="false" />
           <Property Type="Int32" Name="TimedTaskSettingsID" />
           <NavigationProperty Name="Status" Relationship="ProcrastinHater.POCOEntities.FK_Status_Tasks" FromRole="Task" ToRole="Status" />
-          <NavigationProperty Name="TimedTaskSetting" Relationship="ProcrastinHater.POCOEntities.FK_TimedTaskSettings_Tasks" FromRole="Task" ToRole="TimedTaskSetting" />
+          <NavigationProperty Name="TimedTaskSettings" Relationship="ProcrastinHater.POCOEntities.FK_TimedTaskSettings_Tasks1" FromRole="Task" ToRole="TimedTaskSetting" />
         </EntityType>
         <Association Name="FK_ChecklistElements_Groups">
           <End Role="Groups" Type="ProcrastinHater.POCOEntities.Group" Multiplicity="0..1" />
@@ -371,15 +371,15 @@
           <Property Type="String" Name="Name" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Tasks" Relationship="ProcrastinHater.POCOEntities.FK_Status_Tasks" FromRole="Status" ToRole="Task" />
         </EntityType>
-        <EntityType Name="TimedTaskSetting">
+        <EntityType Name="TimedTaskSettings">
           <Key>
-            <PropertyRef Name="TaskID" />
+            <PropertyRef Name="TimedTaskSettingsID" />
           </Key>
-          <Property Type="Int32" Name="TaskID" Nullable="false" />
           <Property Type="Int32" Name="TimeoutActionID" Nullable="false" />
           <Property Type="DateTime" Name="DueTime" Nullable="false" />
-          <NavigationProperty Name="Tasks" Relationship="ProcrastinHater.POCOEntities.FK_TimedTaskSettings_Tasks" FromRole="TimedTaskSetting" ToRole="Task" />
           <NavigationProperty Name="TimeoutAction" Relationship="ProcrastinHater.POCOEntities.FK_TimeoutActions_TimedTaskSettings" FromRole="TimedTaskSetting" ToRole="TimeoutAction" />
+          <Property Type="Int32" Name="TimedTaskSettingsID" Nullable="false" />
+          <NavigationProperty Name="Tasks" Relationship="ProcrastinHater.POCOEntities.FK_TimedTaskSettings_Tasks1" FromRole="TimedTaskSetting" ToRole="Task" />
         </EntityType>
         <EntityType Name="TimeoutAction">
           <Key>
@@ -387,7 +387,7 @@
           </Key>
           <Property Type="Int32" Name="TimeoutActionID" Nullable="false" />
           <Property Type="String" Name="Name" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="TimedTaskSettings" Relationship="ProcrastinHater.POCOEntities.FK_TimeoutActions_TimedTaskSettings" FromRole="TimeoutAction" ToRole="TimedTaskSetting" />
+          <NavigationProperty Name="TimedTaskSettingsSet" Relationship="ProcrastinHater.POCOEntities.FK_TimeoutActions_TimedTaskSettings" FromRole="TimeoutAction" ToRole="TimedTaskSetting" />
         </EntityType>
         <Association Name="FK_Status_Tasks">
           <End Type="ProcrastinHater.POCOEntities.Status" Role="Status" Multiplicity="1" />
@@ -401,27 +401,27 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_TimedTaskSettings_Tasks">
-          <End Type="ProcrastinHater.POCOEntities.TimedTaskSetting" Role="TimedTaskSetting" Multiplicity="0..1" />
-          <End Type="ProcrastinHater.POCOEntities.Task" Role="Task" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TimedTaskSetting">
-              <PropertyRef Name="TaskID" />
-            </Principal>
-            <Dependent Role="Task">
-              <PropertyRef Name="TimedTaskSettingsID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_TimeoutActions_TimedTaskSettings">
           <End Type="ProcrastinHater.POCOEntities.TimeoutAction" Role="TimeoutAction" Multiplicity="1" />
-          <End Type="ProcrastinHater.POCOEntities.TimedTaskSetting" Role="TimedTaskSetting" Multiplicity="*" />
+          <End Type="ProcrastinHater.POCOEntities.TimedTaskSettings" Role="TimedTaskSetting" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="TimeoutAction">
               <PropertyRef Name="TimeoutActionID" />
             </Principal>
             <Dependent Role="TimedTaskSetting">
               <PropertyRef Name="TimeoutActionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TimedTaskSettings_Tasks1">
+          <End Type="ProcrastinHater.POCOEntities.TimedTaskSettings" Role="TimedTaskSetting" Multiplicity="0..1" />
+          <End Type="ProcrastinHater.POCOEntities.Task" Role="Task" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TimedTaskSetting">
+              <PropertyRef Name="TimedTaskSettingsID" />
+            </Principal>
+            <Dependent Role="Task">
+              <PropertyRef Name="TimedTaskSettingsID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -481,12 +481,12 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="TimedTaskSettings">
-            <EntityTypeMapping TypeName="ProcrastinHater.POCOEntities.TimedTaskSetting">
+          <EntitySetMapping Name="TimedTaskSettingsSet">
+            <EntityTypeMapping TypeName="ProcrastinHater.POCOEntities.TimedTaskSettings">
               <MappingFragment StoreEntitySet="TimedTaskSettings">
+                <ScalarProperty Name="TimedTaskSettingsID" ColumnName="TimedTaskSettingsID" />
                 <ScalarProperty Name="DueTime" ColumnName="DueTime" />
                 <ScalarProperty Name="TimeoutActionID" ColumnName="TimeoutActionID" />
-                <ScalarProperty Name="TaskID" ColumnName="TaskID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -523,7 +523,7 @@
         <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.ChecklistElement" Width="1.875" PointX="0.5" PointY="2.875" Height="3.0714322916666665" IsExpanded="true" />
         <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.Group" Width="1.5" PointX="3.625" PointY="1.125" Height="1.2636116536458335" IsExpanded="true" />
         <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.PositionInformation" Width="1.5" PointX="3" PointY="3.5" Height="1.9210009765624996" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.Task" Width="1.5" PointX="3" PointY="6.125" Height="1.7566536458333326" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.Task" Width="1.625" PointX="3" PointY="6.125" Height="1.7566536458333326" IsExpanded="true" />
         <AssociationConnector Association="ProcrastinHater.POCOEntities.FK_ChecklistElements_Groups" ManuallyRouted="false">
           <ConnectorPoint PointX="3.625" PointY="1.7568058268229168" />
           <ConnectorPoint PointX="1.9375025" PointY="1.7568058268229168" />
@@ -546,8 +546,8 @@
           <ConnectorPoint PointX="1.4375" PointY="6.1964322916666674" />
           <ConnectorPoint PointX="2.625" PointY="6.1964322916666674" />
           <ConnectorPoint PointX="2.625" PointY="5.75" />
-          <ConnectorPoint PointX="3.75" PointY="5.75" />
-          <ConnectorPoint PointX="3.75" PointY="6.125" />
+          <ConnectorPoint PointX="3.8125" PointY="5.75" />
+          <ConnectorPoint PointX="3.8125" PointY="6.125" />
         </InheritanceConnector>
         <InheritanceConnector EntityType="ProcrastinHater.POCOEntities.Group" ManuallyRouted="false">
           <ConnectorPoint PointX="1.4375" PointY="2.875" />
@@ -558,21 +558,20 @@
           <ConnectorPoint PointX="4.375" PointY="2.3886116536458335" />
         </InheritanceConnector>
         <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.HardSettings" Width="1.5" PointX="5.375" PointY="3.75" Height="1.4279589843749996" />
-        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.Status" Width="1.5" PointX="0.75" PointY="7.25" Height="1.4279589843749987" />
-        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.TimedTaskSetting" Width="1.5" PointX="0.75" PointY="9.375" Height="1.7566536458333317" />
-        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.TimeoutAction" Width="1.5" PointX="0.75" PointY="12.5" Height="1.4279589843749996" />
+        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.Status" Width="1.5" PointX="5.625" PointY="6.25" Height="1.4279589843749987" />
+        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.TimedTaskSettings" Width="1.75" PointX="0.5" PointY="6.75" Height="1.7566536458333335" />
+        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.TimeoutAction" Width="1.5" PointX="0.875" PointY="9.125" Height="1.4279589843749996" />
         <AssociationConnector Association="ProcrastinHater.POCOEntities.FK_Status_Tasks" >
-          <ConnectorPoint PointX="2.25" PointY="7.5658268229166659" />
-          <ConnectorPoint PointX="3" PointY="7.5658268229166659" />
-        </AssociationConnector>
-        <AssociationConnector Association="ProcrastinHater.POCOEntities.FK_TimedTaskSettings_Tasks" >
-          <ConnectorPoint PointX="2.25" PointY="10.253326822916666" />
-          <ConnectorPoint PointX="3.75" PointY="10.253326822916666" />
-          <ConnectorPoint PointX="3.75" PointY="7.8816536458333326" />
+          <ConnectorPoint PointX="5.625" PointY="6.9639794921875" />
+          <ConnectorPoint PointX="4.625" PointY="6.9639794921875" />
         </AssociationConnector>
         <AssociationConnector Association="ProcrastinHater.POCOEntities.FK_TimeoutActions_TimedTaskSettings" >
-          <ConnectorPoint PointX="1.5" PointY="12.5" />
-          <ConnectorPoint PointX="1.5" PointY="11.131653645833332" />
+          <ConnectorPoint PointX="1.5625" PointY="9.125" />
+          <ConnectorPoint PointX="1.5625" PointY="8.5066536458333335" />
+        </AssociationConnector>
+        <AssociationConnector Association="ProcrastinHater.POCOEntities.FK_TimedTaskSettings_Tasks1" ManuallyRouted="false" >
+          <ConnectorPoint PointX="2.25" PointY="7.3158268229166659" />
+          <ConnectorPoint PointX="3" PointY="7.3158268229166659" />
         </AssociationConnector>
       </Diagram>
     </Diagrams>

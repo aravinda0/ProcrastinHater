@@ -15,15 +15,9 @@ using System.Collections.Specialized;
 
 namespace ProcrastinHater.POCOEntities
 {
-    public partial class TimedTaskSetting
+    public partial class TimedTaskSettings
     {
         #region Primitive Properties
-    
-        public virtual int TaskID
-        {
-            get;
-            set;
-        }
     
         public virtual int TimeoutActionID
         {
@@ -47,9 +41,30 @@ namespace ProcrastinHater.POCOEntities
             get;
             set;
         }
+    
+        public virtual int TimedTaskSettingsID
+        {
+            get;
+            set;
+        }
 
         #endregion
         #region Navigation Properties
+    
+        public virtual TimeoutAction TimeoutAction
+        {
+            get { return _timeoutAction; }
+            set
+            {
+                if (!ReferenceEquals(_timeoutAction, value))
+                {
+                    var previousValue = _timeoutAction;
+                    _timeoutAction = value;
+                    FixupTimeoutAction(previousValue);
+                }
+            }
+        }
+        private TimeoutAction _timeoutAction;
     
         public virtual ICollection<Task> Tasks
         {
@@ -82,37 +97,22 @@ namespace ProcrastinHater.POCOEntities
             }
         }
         private ICollection<Task> _tasks;
-    
-        public virtual TimeoutAction TimeoutAction
-        {
-            get { return _timeoutAction; }
-            set
-            {
-                if (!ReferenceEquals(_timeoutAction, value))
-                {
-                    var previousValue = _timeoutAction;
-                    _timeoutAction = value;
-                    FixupTimeoutAction(previousValue);
-                }
-            }
-        }
-        private TimeoutAction _timeoutAction;
 
         #endregion
         #region Association Fixup
     
         private void FixupTimeoutAction(TimeoutAction previousValue)
         {
-            if (previousValue != null && previousValue.TimedTaskSettings.Contains(this))
+            if (previousValue != null && previousValue.TimedTaskSettingsSet.Contains(this))
             {
-                previousValue.TimedTaskSettings.Remove(this);
+                previousValue.TimedTaskSettingsSet.Remove(this);
             }
     
             if (TimeoutAction != null)
             {
-                if (!TimeoutAction.TimedTaskSettings.Contains(this))
+                if (!TimeoutAction.TimedTaskSettingsSet.Contains(this))
                 {
-                    TimeoutAction.TimedTaskSettings.Add(this);
+                    TimeoutAction.TimedTaskSettingsSet.Add(this);
                 }
                 if (TimeoutActionID != TimeoutAction.TimeoutActionID)
                 {
@@ -127,7 +127,7 @@ namespace ProcrastinHater.POCOEntities
             {
                 foreach (Task item in e.NewItems)
                 {
-                    item.TimedTaskSetting = this;
+                    item.TimedTaskSettings = this;
                 }
             }
     
@@ -135,9 +135,9 @@ namespace ProcrastinHater.POCOEntities
             {
                 foreach (Task item in e.OldItems)
                 {
-                    if (ReferenceEquals(item.TimedTaskSetting, this))
+                    if (ReferenceEquals(item.TimedTaskSettings, this))
                     {
-                        item.TimedTaskSetting = null;
+                        item.TimedTaskSettings = null;
                     }
                 }
             }

@@ -66,11 +66,11 @@ namespace ProcrastinHater.POCOEntities
         }
         private ObjectSet<Status> _status;
     
-        public ObjectSet<TimedTaskSetting> TimedTaskSettings
+        public ObjectSet<TimedTaskSettings> TimedTaskSettingsSet
         {
-            get { return _timedTaskSettings  ?? (_timedTaskSettings = CreateObjectSet<TimedTaskSetting>("TimedTaskSettings")); }
+            get { return _timedTaskSettingsSet  ?? (_timedTaskSettingsSet = CreateObjectSet<TimedTaskSettings>("TimedTaskSettingsSet")); }
         }
-        private ObjectSet<TimedTaskSetting> _timedTaskSettings;
+        private ObjectSet<TimedTaskSettings> _timedTaskSettingsSet;
     
         public ObjectSet<TimeoutAction> TimeoutActions
         {
