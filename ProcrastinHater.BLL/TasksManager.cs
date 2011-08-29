@@ -2,8 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using ProcrastinHater.BusinessInterfaces;
+using ProcrastinHater.BusinessInterfaces.CrudHelpers;
 using ProcrastinHater.POCOEntities;
 
 namespace ProcrastinHater.BLL
@@ -21,7 +21,7 @@ namespace ProcrastinHater.BLL
 		
 		#region CRUD
 		
-		public Task GetItemById(int id)
+		public Task GetTaskById(int id)
 		{
 			Task task = null;
 			
@@ -36,20 +36,30 @@ namespace ProcrastinHater.BLL
 			
 		}
 		
-		public bool AddNewItem(Task newItem, out string err)
+		public bool AddNewTask(TaskInfo taskInfo, int? parentGroupId, 
+		                       out string errors)
 		{
-			throw new NotImplementedException();
+			return AddNewTask(taskInfo, parentGroupId, null, out errors);
 		}
 		
-		public bool DeleteItem(int id, out string err)
+		public bool AddNewTask(TaskInfo taskInfo, int? parentGroupId,
+		                       TimedTaskSettingsInfo timingInfo, out string errors)
 		{
-			throw new NotImplementedException();
+			errors = "";
+			
+			if (taskInfo == null)
+			{
+				errors = "The provided TaskInfo object is null.";
+				return false;
+			}			
+			
+			Task itemToAdd = new Task();
+			
+			
+			return false;
 		}
 		
-		public bool UpdateItem(int id, Task newItem, out string err)
-		{
-			throw new NotImplementedException();
-		}
+
 		
 		#endregion CRUD
 		
@@ -57,5 +67,37 @@ namespace ProcrastinHater.BLL
 		{
 			throw new NotImplementedException();
 		}		
+		
+		#region private helpers
+		
+		private bool ValidateTask(ProcrastinHaterEntities context, Task task,
+		                          out string errors)
+		{
+			errors = "";
+			
+			//using += so as to get all problems with provided Task object in one go.
+			
+			string checkListValiErrs;
+			if (!BLLUtility.ValidateChecklistElement(task, context, out checkListValiErrs))
+				errors += checkListValiErrs + "\n";
+
+            return false;
+			
+		}
+		
+		private string ValidateStatusId(ProcrastinHaterEntities context,
+		                                int statusId)
+		{
+            string err = null;
+            
+            if (!(context.Status.Any((st) => st.StatusID == statusId)))
+            	err = "StatusId: " + statusId.ToString() + " is not a valid status.\n";
+            
+            return err;
+		}
+		
+        //private 
+		
+		#endregion
 	}
 }
