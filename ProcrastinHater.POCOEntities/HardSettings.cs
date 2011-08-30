@@ -19,19 +19,25 @@ namespace ProcrastinHater.POCOEntities
     {
         #region Primitive Properties
     
-        public virtual Nullable<int> NextChecklistElementsKey
+        public virtual int NextChecklistElementsKey
         {
             get;
             set;
         }
     
-        public virtual Nullable<int> DaysOfHistoryToShow
+        public virtual int DaysOfHistoryToShow
         {
             get;
             set;
         }
     
         public virtual bool Check
+        {
+            get;
+            set;
+        }
+    
+        public virtual int NextTimedTaskSettingsKey
         {
             get;
             set;

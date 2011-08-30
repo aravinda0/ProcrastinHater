@@ -54,12 +54,6 @@ namespace ProcrastinHater.POCOEntities
         }
         private ObjectSet<PositionInformation> _positionInformations;
     
-        public ObjectSet<HardSettings> HardSettingsSet
-        {
-            get { return _hardSettingsSet  ?? (_hardSettingsSet = CreateObjectSet<HardSettings>("HardSettingsSet")); }
-        }
-        private ObjectSet<HardSettings> _hardSettingsSet;
-    
         public ObjectSet<Status> Status
         {
             get { return _status  ?? (_status = CreateObjectSet<Status>("Status")); }
@@ -77,6 +71,12 @@ namespace ProcrastinHater.POCOEntities
             get { return _timeoutActions  ?? (_timeoutActions = CreateObjectSet<TimeoutAction>("TimeoutActions")); }
         }
         private ObjectSet<TimeoutAction> _timeoutActions;
+    
+        public ObjectSet<HardSettings> HardSettingsSet
+        {
+            get { return _hardSettingsSet  ?? (_hardSettingsSet = CreateObjectSet<HardSettings>("HardSettingsSet")); }
+        }
+        private ObjectSet<HardSettings> _hardSettingsSet;
 
         #endregion
     }

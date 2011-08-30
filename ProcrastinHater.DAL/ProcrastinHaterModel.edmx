@@ -76,9 +76,10 @@
           <Key>
             <PropertyRef Name="Check" />
           </Key>
-          <Property Name="NextChecklistElementsKey" Type="int" />
-          <Property Name="DaysOfHistoryToShow" Type="int" />
+          <Property Name="NextChecklistElementsKey" Type="int" Nullable="false" />
+          <Property Name="DaysOfHistoryToShow" Type="int" Nullable="false" />
           <Property Name="Check" Type="bit" Nullable="false" />
+          <Property Name="NextTimedTaskSettingsKey" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="PositionInformation">
           <Key>
@@ -250,7 +251,6 @@
             <End Role="ChecklistElements" EntitySet="ChecklistElements" />
             <End Role="PositionInformation" EntitySet="PositionInformations" />
           </AssociationSet>
-          <EntitySet Name="HardSettingsSet" EntityType="ProcrastinHater.POCOEntities.HardSettings" />
           <EntitySet Name="Status" EntityType="ProcrastinHater.POCOEntities.Status" />
           <EntitySet Name="TimedTaskSettingsSet" EntityType="ProcrastinHater.POCOEntities.TimedTaskSettings" />
           <EntitySet Name="TimeoutActions" EntityType="ProcrastinHater.POCOEntities.TimeoutAction" />
@@ -266,6 +266,7 @@
             <End Role="TimedTaskSetting" EntitySet="TimedTaskSettingsSet" />
             <End Role="Task" EntitySet="ChecklistElements" />
           </AssociationSet>
+          <EntitySet Name="HardSettingsSet" EntityType="ProcrastinHater.POCOEntities.HardSettings" />
         </EntityContainer>
         <EntityType Name="ChecklistElement" Abstract="true">
           <Key>
@@ -355,14 +356,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="HardSettings">
-          <Key>
-            <PropertyRef Name="Check" />
-          </Key>
-          <Property Type="Int32" Name="NextChecklistElementsKey" />
-          <Property Type="Int32" Name="DaysOfHistoryToShow" />
-          <Property Type="Boolean" Name="Check" Nullable="false" />
-        </EntityType>
         <EntityType Name="Status">
           <Key>
             <PropertyRef Name="StatusID" />
@@ -425,6 +418,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="HardSettings">
+          <Key>
+            <PropertyRef Name="Check" />
+          </Key>
+          <Property Type="Int32" Name="NextChecklistElementsKey" Nullable="false" />
+          <Property Type="Int32" Name="DaysOfHistoryToShow" Nullable="false" />
+          <Property Type="Boolean" Name="Check" Nullable="false" />
+          <Property Type="Int32" Name="NextTimedTaskSettingsKey" Nullable="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -464,15 +466,6 @@
             <ScalarProperty Name="NextItemID" ColumnName="NextItemID" />
             <ScalarProperty Name="PreviousItemID" ColumnName="PreviousItemID" />
           </MappingFragment></EntityTypeMapping></EntitySetMapping>
-          <EntitySetMapping Name="HardSettingsSet">
-            <EntityTypeMapping TypeName="ProcrastinHater.POCOEntities.HardSettings">
-              <MappingFragment StoreEntitySet="HardSettings">
-                <ScalarProperty Name="Check" ColumnName="Check" />
-                <ScalarProperty Name="DaysOfHistoryToShow" ColumnName="DaysOfHistoryToShow" />
-                <ScalarProperty Name="NextChecklistElementsKey" ColumnName="NextChecklistElementsKey" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Status">
             <EntityTypeMapping TypeName="ProcrastinHater.POCOEntities.Status">
               <MappingFragment StoreEntitySet="Status">
@@ -495,6 +488,16 @@
               <MappingFragment StoreEntitySet="TimeoutActions">
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="TimeoutActionID" ColumnName="TimeoutActionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HardSettingsSet">
+            <EntityTypeMapping TypeName="ProcrastinHater.POCOEntities.HardSettings">
+              <MappingFragment StoreEntitySet="HardSettings">
+                <ScalarProperty Name="NextTimedTaskSettingsKey" ColumnName="NextTimedTaskSettingsKey" />
+                <ScalarProperty Name="Check" ColumnName="Check" />
+                <ScalarProperty Name="DaysOfHistoryToShow" ColumnName="DaysOfHistoryToShow" />
+                <ScalarProperty Name="NextChecklistElementsKey" ColumnName="NextChecklistElementsKey" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -557,7 +560,6 @@
           <ConnectorPoint PointX="4.375" PointY="2.625" />
           <ConnectorPoint PointX="4.375" PointY="2.3886116536458335" />
         </InheritanceConnector>
-        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.HardSettings" Width="1.5" PointX="5.375" PointY="3.75" Height="1.4279589843749996" />
         <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.Status" Width="1.5" PointX="5.625" PointY="6.25" Height="1.4279589843749987" />
         <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.TimedTaskSettings" Width="1.75" PointX="0.5" PointY="6.75" Height="1.7566536458333335" />
         <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.TimeoutAction" Width="1.5" PointX="0.875" PointY="9.125" Height="1.4279589843749996" />
@@ -573,6 +575,7 @@
           <ConnectorPoint PointX="2.25" PointY="7.3158268229166659" />
           <ConnectorPoint PointX="3" PointY="7.3158268229166659" />
         </AssociationConnector>
+        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.HardSettings" Width="1.5" PointX="5.375" PointY="3.75" Height="1.5923063151041674" />
       </Diagram>
     </Diagrams>
   </Designer>
