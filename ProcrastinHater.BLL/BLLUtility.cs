@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Linq;
+using ProcrastinHater.BusinessInterfaces.CrudHelpers;
 using ProcrastinHater.POCOEntities;
 
 namespace ProcrastinHater.BLL
@@ -23,6 +24,18 @@ namespace ProcrastinHater.BLL
 				err = "The settings row does not exist in the database!";
 			
 			return settings;
+		}
+		
+		public static void ChecklistElementInfoToChecklistElement(ChecklistElementInfo cei,
+		                                                          ChecklistElement ce)
+		{
+			ce.Title = cei.Title;
+			ce.BackgroundColor = cei.BackgroundColor;
+			ce.FontColor = cei.FontColor;
+			ce.FontName = cei.FontName;
+			ce.FontSize = cei.FontSize;
+			ce.BeginTime = cei.BeginTime;
+			
 		}
 		
 		#region ChecklistElement validation

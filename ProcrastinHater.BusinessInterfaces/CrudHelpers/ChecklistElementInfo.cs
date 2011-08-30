@@ -9,7 +9,19 @@ namespace ProcrastinHater.BusinessInterfaces.CrudHelpers
 	public abstract class ChecklistElementInfo
 	{
 		public ChecklistElementInfo()
+			:this(null, "#FF232323", "#FFFFFFFF", "Arial", 14, DateTime.Now)
 		{
+		}
+		
+		public ChecklistElementInfo(string title, string bgCol, string fontCol,
+		                            string fontName, double fontSize, DateTime beginTime)
+		{
+			Title = title;
+			BackgroundColor = bgCol;
+			FontColor = fontCol;
+			FontName = fontName;
+			FontSize = fontSize;
+			BeginTime = beginTime;
 		}
 		
 		public string Title {get; set;}

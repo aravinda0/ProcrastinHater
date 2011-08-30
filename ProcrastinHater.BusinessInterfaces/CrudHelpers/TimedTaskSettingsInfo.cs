@@ -12,6 +12,12 @@ namespace ProcrastinHater.BusinessInterfaces.CrudHelpers
 		{
 		}
 		
+		public TimedTaskSettingsInfo(DateTime dueTime, TaskTimeoutActions timeoutAction)
+		{
+			DueTime = dueTime;
+			TimeoutAction = timeoutAction;
+		}
+		
 		public DateTime DueTime { get; set; }
 		
 		public TaskTimeoutActions TimeoutAction {get; set; }
