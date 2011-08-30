@@ -11,20 +11,6 @@ namespace ProcrastinHater.BLL
 	/// </summary>
 	internal static class BLLUtility
 	{
-		public static HardSettings GetHardSettings(ProcrastinHaterEntities context,
-		                                           out string err)
-		{
-			err = "";
-			
-			HardSettings settings = (from s in context.HardSettingsSet
-			                         where s.Check == true
-			                         select s).SingleOrDefault();
-			
-			if (settings == null)
-				err = "The settings row does not exist in the database!";
-			
-			return settings;
-		}
 		
 		public static void ChecklistElementInfoToChecklistElement(ChecklistElementInfo cei,
 		                                                          ChecklistElement ce)

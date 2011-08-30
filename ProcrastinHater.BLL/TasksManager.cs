@@ -82,24 +82,21 @@ namespace ProcrastinHater.BLL
 					errors += taskValidationErrs + ttsValidationErrs;
 				else
 				{
-					//get next IDs for Task & TTS
-					//add to context's sets.
 					
-					string hardSettingsErr;
-					HardSettings hs = BLLUtility.GetHardSettings(context, out hardSettingsErr);
+					int newTaskKey = HardSettingsManager.GetAndAdvanceNextChecklistElementKey(context);
 					
-					if (hs != null)
+					
+					if (newTaskKey != -1)
 					{
 						if (newTTS != null)
 						{
-							newTTS.TimedTaskSettingsID = hs.NextTimedTaskSettingsKey;
-							++hs.NextTimedTaskSettingsKey;
+							//sigh.. validate this too?
+							newTTS.TimedTaskSettingsID = HardSettingsManager.GetAndAdvanceNextTimedTaskSettingsKey(context);
 							
 							taskToAdd.TimedTaskSettings = newTTS;
 						}
 						
-						taskToAdd.ItemID = hs.NextChecklistElementsKey;
-						++hs.NextChecklistElementsKey;
+						taskToAdd.ItemID = newTaskKey;
 						
 						context.ChecklistElements.AddObject(taskToAdd);
 						context.SaveChanges();
@@ -107,7 +104,7 @@ namespace ProcrastinHater.BLL
 						return true;
 					}
 					else
-						errors += hardSettingsErr;
+						errors += "The next-key information could not be retreived from the database.\n";
 				}
 			}
 			
