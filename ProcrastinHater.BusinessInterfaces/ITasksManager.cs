@@ -17,6 +17,8 @@ namespace ProcrastinHater.BusinessInterfaces
 		bool AddNewTask(TaskInfo taskInfo, int? parentGroupId, 
 		                TimedTaskSettingsInfo timingInfo, out string errors);
 		
+		
+		List<Task> GetCurrentPositionTrackedTasks(out List<PositionInformation> posInfo, out string error);
 		List<Task> GetTasksForDate(DateTime date);
 	}
 }

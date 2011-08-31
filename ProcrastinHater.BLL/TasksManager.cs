@@ -29,13 +29,13 @@ namespace ProcrastinHater.BLL
 			{
 				task = (from t in context.ChecklistElements.OfType<Task>().Include("TimedTaskSettings")
 				             where t.ItemID == id select t).SingleOrDefault();
-				
 			}
 			
 			return task;
 			
 		}
 		
+		#region Add
 		public bool AddNewTask(TaskInfo taskInfo, int? parentGroupId, 
 		                       out string errors)
 		{
@@ -113,6 +113,7 @@ namespace ProcrastinHater.BLL
 			return false;
 		}
 		
+		#endregion Add
 
 		
 		#endregion CRUD
@@ -122,6 +123,57 @@ namespace ProcrastinHater.BLL
 		{
 			throw new NotImplementedException();
 		}		
+		
+		//TENTATIVE.
+		//out param used because full version of this method will use DaysOfHistory option
+		//to return that no. of days of tasks and that no. of days of pos info.
+		//If we have two separate methods for each action, possibility or error in cases 
+		//where GetTodaysTasks() called, then DaysOfHistory changed, then GetPosInfo() returns
+		//wrong no. of items.
+		//This way, can assert if todaysTasks.Count == (posInfo's tasks).Count. Well.. only a count based check.
+		//ALT: return fully structured tree?
+		public List<Task> GetCurrentPositionTrackedTasks(out List<PositionInformation> posInfo, out string error)
+		{
+			error = null;
+			List<Task> ret = null;
+			posInfo = null;
+			
+			using (ProcrastinHaterEntities context = new ProcrastinHaterEntities())
+			{
+				ret = (from t in context.ChecklistElements.OfType<Task>()
+				                   where ((t.BeginTime < DateTime.Now) && ((t.ResolveTime == null) || (t.ResolveTime > DateTime.Now)))
+				                   select t).ToList();
+				
+				if (ret != null)
+				{
+					posInfo = context.PositionInformations.ToList();
+					
+					if (posInfo != null)
+					{
+						var numPosTrackedTasks = (from pt in posInfo
+						                       where pt.ChecklistElement is Task
+						                       select pt).Count();
+						
+						if (ret.Count != numPosTrackedTasks)
+						{
+							error = "The database has been corrupted. The PositionInformation table is out of sync with the currently active tasks.";
+							posInfo = null;
+							ret = null;
+						}
+					
+					}
+					else
+					{
+						error = "The PositionInformation table is missing relevant data.";
+						ret = null;
+					}
+
+				}
+				
+			}
+			
+			return ret;
+		}
 		
 		#region private helpers
 		
