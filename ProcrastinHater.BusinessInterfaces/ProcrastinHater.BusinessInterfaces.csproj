@@ -41,7 +41,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLLClasses\ChecklistElementBLL.cs" />
+    <Compile Include="BLLClasses\GroupBLL.cs" />
+    <Compile Include="BLLClasses\TaskBLL.cs" />
     <Compile Include="CrudHelpers\ChecklistElementInfo.cs" />
+    <Compile Include="CrudHelpers\GroupInfo.cs" />
     <Compile Include="CrudHelpers\TaskInfo.cs" />
     <Compile Include="CrudHelpers\Enums.cs" />
     <Compile Include="CrudHelpers\TimedTaskSettingsInfo.cs" />
@@ -49,13 +53,14 @@
     <Compile Include="ITasksManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="CrudHelpers" />
+    <Folder Include="BLLClasses" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\ProcrastinHater.POCOEntities\ProcrastinHater.POCOEntities.csproj">
       <Project>{BB646C68-78B2-402F-BCDD-1AF09F3621A6}</Project>
       <Name>ProcrastinHater.POCOEntities</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="CrudHelpers" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>
