@@ -4,7 +4,7 @@ using System;
 namespace ProcrastinHater.BusinessInterfaces.CrudHelpers
 {
 	/// <summary>
-	/// Description of TaskInfo.
+	/// Helper that aids in specifying properties of a Task object.
 	/// </summary>
 	public class TaskInfo : ChecklistElementInfo
 	{
