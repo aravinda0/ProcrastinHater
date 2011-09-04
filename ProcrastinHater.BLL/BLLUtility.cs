@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Linq;
+using ProcrastinHater.BusinessInterfaces.BLLClasses;
 using ProcrastinHater.BusinessInterfaces.CrudHelpers;
 using ProcrastinHater.POCOEntities;
 
@@ -23,6 +24,34 @@ namespace ProcrastinHater.BLL
 			ce.BeginTime = cei.BeginTime;
 			
 		}
+		
+
+		
+        #region Entity class to BLL class conversion
+        
+        public static TaskBLL CreateTaskBll(Task dalTask)
+        {
+        	
+        	TimedTaskSettingsInfo ttsi = null;
+        	if (dalTask.TimedTaskSettings != null)
+        	{
+        		ttsi.DueTime = dalTask.TimedTaskSettings.DueTime;
+        		ttsi.TimeoutAction = (TaskTimeoutActions)dalTask.TimedTaskSettings.TimeoutActionID;
+        	}
+        	
+        	return  new TaskBLL(dalTask.ItemID, dalTask.ParentGroupID, 
+        	                          new TaskInfo(dalTask.Title, dalTask.BackgroundColor, dalTask.FontColor, dalTask.FontName, dalTask.FontSize, dalTask.BeginTime, dalTask.Details, (TaskStatuses)dalTask.StatusID),
+        	                          dalTask.ResolveTime, ttsi);
+        }
+        
+        public static GroupBLL CreateGroupBll(Group dalGroup)
+        {
+        	return  new GroupBLL(dalGroup.ItemID, dalGroup.ParentGroupID, 
+        	                     new GroupInfo(dalGroup.Title, dalGroup.BackgroundColor, dalGroup.FontColor, dalGroup.FontName, dalGroup.FontSize, dalGroup.BeginTime, dalGroup.IsExpanded),
+        	                     dalGroup.ResolveTime);
+        }
+        
+        #endregion Entity class to BLL class conversion		
 		
 		#region ChecklistElement validation
 		

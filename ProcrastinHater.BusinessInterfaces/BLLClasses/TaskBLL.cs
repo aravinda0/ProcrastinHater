@@ -18,9 +18,13 @@ namespace ProcrastinHater.BusinessInterfaces.BLLClasses
 			Status = tInfo.Status;
 			Details = tInfo.Details;
 			
-			TimingInfo = new TimedTaskSettingsInfo();
-			TimingInfo.DueTime = timingInfo.DueTime;
-			TimingInfo.TimeoutAction = timingInfo.TimeoutAction;
+			if (timingInfo != null)
+			{
+				TimingInfo = new TimedTaskSettingsInfo();
+				TimingInfo.DueTime = timingInfo.DueTime;
+				TimingInfo.TimeoutAction = timingInfo.TimeoutAction;
+			}
+			
 		}
 		
 		public string Details

@@ -26,7 +26,7 @@ namespace ProcrastinHater.BusinessInterfaces.BLLClasses
 		public List<ChecklistElementBLL> Items
 		{
 			get;
-			private set;
+			set; //HACK: hmm... okay to be settable in an otherwise RO object?
 		}
 	}
 }
