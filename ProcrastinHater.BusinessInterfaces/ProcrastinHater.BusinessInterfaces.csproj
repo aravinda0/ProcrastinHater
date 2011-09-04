@@ -56,11 +56,5 @@
     <Folder Include="CrudHelpers" />
     <Folder Include="BLLClasses" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ProcrastinHater.POCOEntities\ProcrastinHater.POCOEntities.csproj">
-      <Project>{BB646C68-78B2-402F-BCDD-1AF09F3621A6}</Project>
-      <Name>ProcrastinHater.POCOEntities</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>
