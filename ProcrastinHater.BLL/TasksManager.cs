@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ProcrastinHater.BusinessInterfaces;
+using ProcrastinHater.BusinessInterfaces.BLLClasses;
 using ProcrastinHater.BusinessInterfaces.CrudHelpers;
 using ProcrastinHater.POCOEntities;
 
@@ -21,17 +22,20 @@ namespace ProcrastinHater.BLL
 		
 		#region CRUD
 		
-		public Task GetTaskById(int id)
+		public TaskBLL GetTaskById(int id)
 		{
-			Task task = null;
+			TaskBLL bllTask = null;
 			
 			using (ProcrastinHaterEntities context = new ProcrastinHaterEntities())
 			{
-				task = (from t in context.ChecklistElements.OfType<Task>().Include("TimedTaskSettings")
+				Task dalTask = (from t in context.ChecklistElements.OfType<Task>().Include("TimedTaskSettings")
 				             where t.ItemID == id select t).SingleOrDefault();
+				
+				if (dalTask != null)
+					BLLUtility.CreateTaskBll(dalTask);
 			}
 			
-			return task;
+			return bllTask;
 			
 		}
 		
@@ -119,61 +123,107 @@ namespace ProcrastinHater.BLL
 		#endregion CRUD
 		
 		
-		public List<Task> GetTasksForDate(DateTime date)
-		{
-			throw new NotImplementedException();
-		}		
+
+		#region Get tree from position information
 		
-		//TENTATIVE.
-		//out param used because full version of this method will use DaysOfHistory option
-		//to return that no. of days of tasks and that no. of days of pos info.
-		//If we have two separate methods for each action, possibility or error in cases 
-		//where GetTodaysTasks() called, then DaysOfHistory changed, then GetPosInfo() returns
-		//wrong no. of items.
-		//This way, can assert if todaysTasks.Count == (posInfo's tasks).Count. Well.. only a count based check.
-		//ALT: return fully structured tree?
-		public List<Task> GetCurrentPositionTrackedTasks(out List<PositionInformation> posInfo, out string error)
+		/// <summary>
+		/// Get the latest set of elements, which happen to be position-tracked
+		/// in the database.
+		/// </summary>
+		/// <returns>Returns a tree of ChecklistElements with items organized 
+		/// as per the order stored in the database.</returns>
+		public List<ChecklistElementBLL> GetChecklistElementTreeFromPositionInfo()
 		{
-			error = null;
-			List<Task> ret = null;
-			posInfo = null;
+			List<ChecklistElementBLL> tree = null;
 			
 			using (ProcrastinHaterEntities context = new ProcrastinHaterEntities())
 			{
-				ret = (from t in context.ChecklistElements.OfType<Task>()
-				                   where ((t.BeginTime < DateTime.Now) && ((t.ResolveTime == null) || (t.ResolveTime > DateTime.Now)))
-				                   select t).ToList();
 				
-				if (ret != null)
+				if (context.PositionInformations.Count() > 0)
 				{
-					posInfo = context.PositionInformations.ToList();
+					//ALT: use Distinct() with custom comparer?
+					var firstItemsOfEveryGroup = (from pi in context.PositionInformations
+					                             where pi.PreviousItemID == null
+					                             select pi.ChecklistElement);
 					
-					if (posInfo != null)
+					var v = firstItemsOfEveryGroup.ToList();
+					
+					
+					Dictionary<int, List<ChecklistElementBLL>> groupIdToGroupItemsMap = new Dictionary<int, List<ChecklistElementBLL>>();
+					
+					foreach (ChecklistElement fi in firstItemsOfEveryGroup)
 					{
-						var numPosTrackedTasks = (from pt in posInfo
-						                       where pt.ChecklistElement is Task
-						                       select pt).Count();
+						List<ChecklistElementBLL> orderedGroupMembers = GetOrderedConvertedSiblings(context,fi);
 						
-						if (ret.Count != numPosTrackedTasks)
-						{
-							error = "The database has been corrupted. The PositionInformation table is out of sync with the currently active tasks.";
-							posInfo = null;
-							ret = null;
-						}
+						if (fi.ParentGroupID == null)
+							groupIdToGroupItemsMap[-1] = orderedGroupMembers; //top level elements with ParentGroupID == null
+						else
+							groupIdToGroupItemsMap[(int)fi.ParentGroupID] = orderedGroupMembers;
+					}
 					
-					}
-					else
+					tree = groupIdToGroupItemsMap[-1];
+					
+					var topLevelGroups = (from ce in tree 
+					                      where ce is GroupBLL
+					                      select ce as GroupBLL);
+					
+					Queue<GroupBLL> childlessUnprocessedGroupsQ = new Queue<GroupBLL>(topLevelGroups);
+					
+					while (childlessUnprocessedGroupsQ.Count > 0)
 					{
-						error = "The PositionInformation table is missing relevant data.";
-						ret = null;
+						GroupBLL g = childlessUnprocessedGroupsQ.Dequeue();
+						g.Items = groupIdToGroupItemsMap[g.ItemID];
+						
+						var groups = (from ce in g.Items 
+				                      where ce is GroupBLL
+				                      select ce as GroupBLL);
+						
+						
+						foreach (GroupBLL gg in groups)
+							childlessUnprocessedGroupsQ.Enqueue(gg);
 					}
-
+					
+					return tree;
+					
 				}
+				
 				
 			}
 			
+			return null;
+		}
+		
+		private List<ChecklistElementBLL> GetOrderedConvertedSiblings(ProcrastinHaterEntities context, ChecklistElement firstGroupItem)
+		{
+			//param firstGroup will never be null, so no check needed.
+			
+			List<ChecklistElementBLL> ret = new List<ChecklistElementBLL>();
+			
+			
+			ChecklistElement ce = firstGroupItem;
+			do
+			{
+				ChecklistElementBLL bllCE = null;
+				if (ce is Task)
+				{
+					Task t = ce as Task;
+//					context.LoadProperty(t, o => o.TimedTaskSettings); // Is this needed?
+					bllCE = BLLUtility.CreateTaskBll(t);
+				}
+				else if (ce is Group)
+				{
+					bllCE = BLLUtility.CreateGroupBll(ce as Group);		
+				}
+				
+				ret.Add(bllCE);
+				
+			} while ((ce = ce.PositionInformation.NextItem) != null);
+			
 			return ret;
 		}
+		
+		#endregion Get tree from position information
+		
 		
 		#region private helpers
 		
@@ -272,7 +322,7 @@ namespace ProcrastinHater.BLL
 		}
         #endregion Validation
         
-        #region Helper to normal class conversion
+        #region Helper to entity class conversion
         private void TaskInfoToTask(TaskInfo ti, Task t)
         {
         	BLLUtility.ChecklistElementInfoToChecklistElement(ti, t);
@@ -287,8 +337,9 @@ namespace ProcrastinHater.BLL
         	tts.TimeoutActionID = (int)ttsi.TimeoutAction;
         }
 		
-        #endregion Helper to normal class conversion
+        #endregion Helper to entity class conversion
         
+
 		#endregion private helpers
 	}
 }
