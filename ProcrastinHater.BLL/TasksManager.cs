@@ -135,7 +135,7 @@ namespace ProcrastinHater.BLL
 			//using += so as to get all problems with provided Task object in one go.
 			
 			string checkListValiErrs;
-			if (!BLLUtility.ValidateChecklistElement(task, context, out checkListValiErrs))
+			if (!BLLUtility.ValidateChecklistElement(context, task, out checkListValiErrs))
 				errors += checkListValiErrs + "\n";
 			
 			string statusIdErr = ValidateStatusId(context, task.StatusID);

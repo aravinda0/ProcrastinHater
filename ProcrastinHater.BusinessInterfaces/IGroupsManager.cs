@@ -1,8 +1,8 @@
 ﻿
 using System;
 using System.Collections.Generic;
-
 using ProcrastinHater.BusinessInterfaces.BLLClasses;
+using ProcrastinHater.BusinessInterfaces.CrudHelpers;
 
 namespace ProcrastinHater.BusinessInterfaces
 {
@@ -11,6 +11,6 @@ namespace ProcrastinHater.BusinessInterfaces
 	/// </summary>
 	public interface IGroupsManager
 	{
-		
+		bool AddNewGroup(GroupInfo gInfo, int? parentGroupId, out string errors);
 	}
 }

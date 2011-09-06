@@ -55,9 +55,9 @@ namespace ProcrastinHater.BLL
 		
 		#region ChecklistElement validation
 		
-		public static bool ValidateChecklistElement(ChecklistElement item, 
-		                                       ProcrastinHaterEntities context,
-		                                       out string errors)
+		public static bool ValidateChecklistElement(ProcrastinHaterEntities context,
+		                                            ChecklistElement item,
+		                                            out string errors)
 		{
 			errors = "";
 			
