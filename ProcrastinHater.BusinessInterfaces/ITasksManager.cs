@@ -7,7 +7,7 @@ using ProcrastinHater.BusinessInterfaces.CrudHelpers;
 namespace ProcrastinHater.BusinessInterfaces
 {
 	/// <summary>
-	/// Contract for management of 'Task' objects.
+	/// Contract for management of tasks.
 	/// </summary>
 	public interface ITasksManager 
 	{
@@ -17,7 +17,5 @@ namespace ProcrastinHater.BusinessInterfaces
 		                TimedTaskSettingsInfo timingInfo, out string errors);
 		
 		
-		
-		List<ChecklistElementBLL> GetChecklistElementTreeFromPositionInfo();
 	}
 }

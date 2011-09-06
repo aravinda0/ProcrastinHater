@@ -49,6 +49,8 @@
     <Compile Include="CrudHelpers\TaskInfo.cs" />
     <Compile Include="CrudHelpers\Enums.cs" />
     <Compile Include="CrudHelpers\TimedTaskSettingsInfo.cs" />
+    <Compile Include="IChecklistElementOrganizer.cs" />
+    <Compile Include="IGroupsManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ITasksManager.cs" />
   </ItemGroup>
