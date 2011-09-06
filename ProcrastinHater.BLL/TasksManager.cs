@@ -101,6 +101,7 @@ namespace ProcrastinHater.BLL
 						}
 						
 						taskToAdd.ItemID = newTaskKey;
+						BLLUtility.AddPositionInfo(context, taskToAdd, parentGroupId);
 						
 						context.ChecklistElements.AddObject(taskToAdd);
 						context.SaveChanges();

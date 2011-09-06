@@ -43,6 +43,8 @@ namespace ProcrastinHater.BLL
 						if (newGroupId != -1)
 						{
 							groupToAdd.ItemID = newGroupId;
+							BLLUtility.AddPositionInfo(context, groupToAdd, parentGroupId);
+							
 							context.ChecklistElements.AddObject(groupToAdd);
 							context.SaveChanges();
 						}

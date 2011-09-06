@@ -26,6 +26,23 @@ namespace ProcrastinHater.BLL
 		}
 		
 
+		//For now, add item to end of list
+		public static void AddPositionInfo(ProcrastinHaterEntities context, 
+		                                   ChecklistElement item, int? parentGroupId)
+		{
+			item.PositionInformation = new PositionInformation();
+			
+			var lastItemOfGroup = (from pos in context.PositionInformations
+			                       where ((pos.ChecklistElement.ParentGroupID == parentGroupId) && (pos.NextItemID == null))
+			                       select pos.ChecklistElement).SingleOrDefault();
+			
+			if (lastItemOfGroup != null)
+			{
+				lastItemOfGroup.PositionInformation.NextItemID = item.ItemID;
+				item.PositionInformation.PreviousItemID = lastItemOfGroup.ItemID;
+				item.PositionInformation.NextItemID = null;
+			}
+		}
 		
         #region Entity class to BLL class conversion
         
