@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 using ElementalMvvm;
 using ProcrastinHater.BusinessInterfaces;
-using ProcrastinHater.POCOEntities;
 
 namespace ProcrastinHater.ViewModels
 {
@@ -13,15 +12,20 @@ namespace ProcrastinHater.ViewModels
 	/// </summary>
 	public class MainWindowVM : CloseableViewModel
 	{
-		public MainWindowVM(ITasksManager tasksManager)
+		public MainWindowVM(ITasksManager tasksManager, IGroupsManager groupsManager,
+		                   IChecklistElementOrganizer ceOrganizer)
 		{
 			_tasksManager = tasksManager;
+			_groupsManager = groupsManager;
+			_ceOrganizer = ceOrganizer;
 		}
 		
 		
 		#region private fields
 		
 		ITasksManager _tasksManager;
+		IGroupsManager _groupsManager;
+		IChecklistElementOrganizer _ceOrganizer;
 		
 		#endregion private fields
 	}
