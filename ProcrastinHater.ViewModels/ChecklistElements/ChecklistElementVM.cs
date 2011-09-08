@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using ElementalMvvm;
 using ProcrastinHater.BusinessInterfaces.BLLClasses;
+using ProcrastinHater.BusinessInterfaces.CrudHelpers;
 
 namespace ProcrastinHater.ViewModels.ChecklistElements
 {
@@ -23,18 +24,19 @@ namespace ProcrastinHater.ViewModels.ChecklistElements
 			ResolveTime = null;
 		}
 		
-		public ChecklistElementVM(ChecklistElementBLL item)
+		public ChecklistElementVM(int id, ChecklistElementInfo ceInfo, 
+		                          DateTime? resolveTime, GroupVM parentGroup)
 		{
-			ItemID = item.ItemID;
-//			ParentGroupID = item.ParentGroupID;
+			ItemID = id;
 
-			Title = item.Title;
-			BackgroundColor = item.BackgroundColor;
-			FontColor = item.FontColor;
-			FontSize = item.FontSize;
-			FontName = item.FontName;
-			BeginTime = item.BeginTime;
-			ResolveTime = item.ResolveTime;
+			Title = ceInfo.Title;
+			BackgroundColor = ceInfo.BackgroundColor;
+			FontColor = ceInfo.FontColor;
+			FontSize = ceInfo.FontSize;
+			FontName = ceInfo.FontName;
+			BeginTime = ceInfo.BeginTime;
+			
+			ResolveTime = resolveTime;
 			
 		}
 		
@@ -138,18 +140,18 @@ namespace ProcrastinHater.ViewModels.ChecklistElements
 		}
 		
 		
-//		public int? ParentGroupID
-//		{
-//			get {return _parentGroupId;}
-//			set
-//			{
-//				if (_parentGroupId == value)
-//					return;
-//				
-//				_parentGroupId = value;
-//				this.OnPropertyChanged("ResolveTime");
-//			}
-//		}		
+		public GroupVM ParentGroup
+		{
+			get {return _parentGroup;}
+			set
+			{
+				if (_parentGroup == value)
+					return;
+				
+				_parentGroup = value;
+				this.OnPropertyChanged("ParentGroup");
+			}
+		}		
 		
 		#endregion Mapped properties
 		
@@ -163,7 +165,7 @@ namespace ProcrastinHater.ViewModels.ChecklistElements
 		double _fontSize;
 		string _backgroundColor;
 		DateTime? _resolveTime;
-//		int ? _parentGroupId;
+		GroupVM  _parentGroup;
 		
 		#endregion private fields
 		
