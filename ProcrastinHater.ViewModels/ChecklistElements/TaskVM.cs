@@ -14,7 +14,7 @@ namespace ProcrastinHater.ViewModels.ChecklistElements
 			Status = TaskStatuses.PENDING;
 		}
 		
-		public TaskVM(int id, TaskInfo taskInfo, DateTime? resolveTime, GroupVM parentGroup)
+		public TaskVM(int id, TaskInfo taskInfo, DateTime? resolveTime, GroupVM parentGroup = null)
 			:base(id, taskInfo, resolveTime, parentGroup)
 		{
 			Details = taskInfo.Details;

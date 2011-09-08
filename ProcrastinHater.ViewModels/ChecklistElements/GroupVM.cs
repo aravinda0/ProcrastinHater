@@ -16,7 +16,7 @@ namespace ProcrastinHater.ViewModels.ChecklistElements
 			IsExpanded = true;
 		}
 		
-		public GroupVM(int id, GroupInfo groupInfo, DateTime? resolveTime, GroupVM parentGroup)
+		public GroupVM(int id, GroupInfo groupInfo, DateTime? resolveTime, GroupVM parentGroup = null)
 			:base(id, groupInfo, resolveTime, parentGroup)
 		{
 			IsExpanded = groupInfo.IsExpanded;
