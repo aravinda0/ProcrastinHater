@@ -52,6 +52,7 @@ namespace ProcrastinHater.BLL
         	TimedTaskSettingsInfo ttsi = null;
         	if (dalTask.TimedTaskSettings != null)
         	{
+        		ttsi = new TimedTaskSettingsInfo();
         		ttsi.DueTime = dalTask.TimedTaskSettings.DueTime;
         		ttsi.TimeoutAction = (TaskTimeoutActions)dalTask.TimedTaskSettings.TimeoutActionID;
         	}

@@ -18,108 +18,86 @@ namespace ProcrastinHater.BLL
 		{
 		}
 		
-		
-
-		#region Get tree from position information
-		
 		/// <summary>
-		/// Get the latest set of elements, which happen to be position-tracked
-		/// in the database.
+		/// Get tree of items that are active for the give date.
 		/// </summary>
-		/// <returns>Returns a tree of ChecklistElements with items organized 
-		/// as per the user's' ordering, stored in the database.</returns>
-		public List<ChecklistElementBLL> GetChecklistElementTreeFromPositionInfo()
+		/// <param name="date"></param>
+		/// <returns></returns>
+		public List<ChecklistElementBLL> GetChecklistElementTreeForDate(DateTime date)
 		{
-			List<ChecklistElementBLL> tree = null;
+			List<ChecklistElementBLL> topLvlNodes = new List<ChecklistElementBLL>();
 			
 			using (ProcrastinHaterEntities context = new ProcrastinHaterEntities())
 			{
 				
-				if (context.PositionInformations.Count() > 0)
-				{
-					//ALT: use Distinct() with custom comparer?
-					var firstItemsOfEveryGroup = (from pi in context.PositionInformations
-					                             where pi.PreviousItemID == null
-					                             select pi.ChecklistElement);
+				//first get tasks(leaf nodes) only.
+				var allTasksForDateGroupedByParents = (from t in context.ChecklistElements.OfType<Task>()
+				                                       where date >= t.BeginTime && (t.ResolveTime == null || date < (DateTime)t.ResolveTime)
+				                                       group t by t.ParentGroup into bucket
+				                                       select new {Group = bucket.Key, Items = bucket});
+				
+				//group id to its members
+				Dictionary<int, List<ChecklistElementBLL>> groupToMembersMap = new Dictionary<int, List<ChecklistElementBLL>>();
+				Queue<Group> unconvertedGroupsQ = new Queue<Group>();
 					
-					var v = firstItemsOfEveryGroup.ToList();
+				//So far we have tasks only. Put each set of tasks in appropriate ChklistBLL collections.
+				//And populate queue to begin work on organizing 'Group' objects..
+				foreach (var bucket in allTasksForDateGroupedByParents)
+				{					
+					int key = (bucket.Group == null)?(-1):(bucket.Group.ItemID);
+					
+					List<ChecklistElementBLL> coll = new List<ChecklistElementBLL>();
+					
+					//add PARENT GROUP of current task set
+					if (bucket.Group != null)
+						unconvertedGroupsQ.Enqueue(bucket.Group);
+					
+					foreach (Task dalTask in bucket.Items)
+						coll.Add(BLLUtility.CreateTaskBll(dalTask));
 					
 					
-					Dictionary<int, List<ChecklistElementBLL>> groupIdToGroupItemsMap = new Dictionary<int, List<ChecklistElementBLL>>();
-					
-					foreach (ChecklistElement fi in firstItemsOfEveryGroup)
-					{
-						List<ChecklistElementBLL> orderedGroupMembers = GetOrderedConvertedSiblings(context,fi);
-						
-						if (fi.ParentGroupID == null)
-							groupIdToGroupItemsMap[-1] = orderedGroupMembers; //top level elements with ParentGroupID == null
-						else
-							groupIdToGroupItemsMap[(int)fi.ParentGroupID] = orderedGroupMembers;
-					}
-					
-					tree = groupIdToGroupItemsMap[-1];
-					
-					var topLevelGroups = (from ce in tree 
-					                      where ce is GroupBLL
-					                      select ce as GroupBLL);
-					
-					Queue<GroupBLL> childlessUnprocessedGroupsQ = new Queue<GroupBLL>(topLevelGroups);
-					
-					while (childlessUnprocessedGroupsQ.Count > 0)
-					{
-						GroupBLL g = childlessUnprocessedGroupsQ.Dequeue();
-						g.Items = groupIdToGroupItemsMap[g.ItemID];
-						
-						var groups = (from ce in g.Items 
-				                      where ce is GroupBLL
-				                      select ce as GroupBLL);
-						
-						
-						foreach (GroupBLL gg in groups)
-							childlessUnprocessedGroupsQ.Enqueue(gg);
-					}
-					
-					return tree;
-					
+					groupToMembersMap[key] = coll;
 				}
 				
+				//Now process Groups only, ie. the remaining non-leaf nodes
+				while (unconvertedGroupsQ.Count > 0)
+				{
+					Group dalGroup = unconvertedGroupsQ.Dequeue();
+					
+					GroupBLL bllGroup = BLLUtility.CreateGroupBll(dalGroup);
+					bllGroup.Items = groupToMembersMap[dalGroup.ItemID];
+					
+					//check if parent group has mapping in dict. If not, create.
+					//Either case, add to dict[parent].
+					if (dalGroup.ParentGroup != null)
+					{
+						List<ChecklistElementBLL> memberItems;
+						if (groupToMembersMap.TryGetValue((int)dalGroup.ParentGroupID, out memberItems))
+							memberItems.Add(bllGroup);
+						else
+						{
+							memberItems = new List<ChecklistElementBLL>();
+							memberItems.Add(bllGroup);
+							groupToMembersMap[(int)dalGroup.ParentGroupID] = memberItems;
+							
+							unconvertedGroupsQ.Enqueue(dalGroup.ParentGroup);
+						}
+					}
+					else
+					{
+						if (!groupToMembersMap.ContainsKey(-1))
+							groupToMembersMap[-1] = new List<ChecklistElementBLL>();
+							
+						groupToMembersMap[-1].Add(bllGroup);
+					}
+				}
+				
+				return groupToMembersMap[-1];
 				
 			}
 			
-			return null;
 		}
 		
-		private List<ChecklistElementBLL> GetOrderedConvertedSiblings(ProcrastinHaterEntities context, ChecklistElement firstGroupItem)
-		{
-			//param firstGroup will never be null, so no check needed.
-			
-			List<ChecklistElementBLL> ret = new List<ChecklistElementBLL>();
-			
-			
-			ChecklistElement ce = firstGroupItem;
-			do
-			{
-				ChecklistElementBLL bllCE = null;
-				if (ce is Task)
-				{
-					Task t = ce as Task;
-//					context.LoadProperty(t, o => o.TimedTaskSettings); // Is this needed?
-					bllCE = BLLUtility.CreateTaskBll(t);
-				}
-				else if (ce is Group)
-				{
-					bllCE = BLLUtility.CreateGroupBll(ce as Group);		
-				}
-				
-				ret.Add(bllCE);
-				
-			} while ((ce = ce.PositionInformation.NextItem) != null);
-			
-			return ret;
-		}
 		
-		#endregion Get tree from position information
-		
-				
 	}
 }
