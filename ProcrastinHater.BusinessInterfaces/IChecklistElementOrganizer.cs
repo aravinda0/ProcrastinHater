@@ -11,7 +11,7 @@ namespace ProcrastinHater.BusinessInterfaces
 	/// </summary>
 	public interface IChecklistElementOrganizer
 	{
-		List<ChecklistElementBLL> GetChecklistElementTreeFromPositionInfo();
+		List<ChecklistElementBLL> GetChecklistElementTreeForDate(DateTime date);
 		
 	}
 }
