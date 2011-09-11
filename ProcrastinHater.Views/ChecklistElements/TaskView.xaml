@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="ProcrastinHater.Views.ChecklistElements.TaskView"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Grid>
+		<Border CornerRadius="4" Background="DarkGray" Height="60"
+			Margin="2" BorderThickness="1" BorderBrush="Black">
+			<StackPanel>
+				<TextBlock Text="{Binding Title}" FontSize="{Binding FontSize}"/>
+			</StackPanel>
+		</Border>
+	</Grid>
+</UserControl>

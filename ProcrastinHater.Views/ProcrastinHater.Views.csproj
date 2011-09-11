@@ -31,6 +31,9 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ElementalMvvm">
+      <HintPath>..\Externals\ElementalMvvm.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -64,15 +67,27 @@
       <SubType>Code</SubType>
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="ChecklistElements\GroupView.xaml.cs">
+      <DependentUpon>GroupView.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ChecklistElements\TaskView.xaml.cs">
+      <DependentUpon>TaskView.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindowView.xaml.cs">
+      <DependentUpon>MainWindowView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\WPFAssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="MainWindow.xaml" />
+    <Page Include="ChecklistElements\GroupView.xaml" />
+    <Page Include="ChecklistElements\TaskView.xaml" />
+    <Page Include="MainWindowView.xaml" />
+    <Page Include="Resources\Styles.xaml" />
+    <Page Include="Resources\TypedDataTemplates.xaml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ProcrastinHater.BLL\ProcrastinHater.BLL.csproj">
@@ -83,14 +98,17 @@
       <Project>{78386AFD-9BAB-4C7F-9A1C-BDF4C82267E5}</Project>
       <Name>ProcrastinHater.BusinessInterfaces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ProcrastinHater.POCOEntities\ProcrastinHater.POCOEntities.csproj">
-      <Project>{BB646C68-78B2-402F-BCDD-1AF09F3621A6}</Project>
-      <Name>ProcrastinHater.POCOEntities</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ProcrastinHater.ViewModels\ProcrastinHater.ViewModels.csproj">
       <Project>{82B6FBA5-A965-4F40-84A7-4F0BAB327537}</Project>
       <Name>ProcrastinHater.ViewModels</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ChecklistElements" />
+    <Folder Include="Resources" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>

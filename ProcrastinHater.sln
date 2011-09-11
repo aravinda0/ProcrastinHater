@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-# SharpDevelop 4.1.0.7811-beta
+# SharpDevelop 4.1.0.7890-beta
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFTest", "WPFTest\WPFTest.csproj", "{FBD70FBC-967C-4F5D-9F8C-A018D0601277}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcrastinHater.Test", "ProcrastinHater.Test\ProcrastinHater.Test.csproj", "{D8092D58-F221-495A-B8FB-81B1C2F8621F}"
