@@ -92,12 +92,93 @@ namespace ProcrastinHater.BLL
 					}
 				}
 				
+				SortTreeByPositionInfo(context, groupToMembersMap);
+				
 				return groupToMembersMap[-1];
 				
 			}
 			
 		}
 		
+		private void SortTreeByPositionInfo(ProcrastinHaterEntities context, Dictionary<int, List<ChecklistElementBLL>> tree)
+		{
+			ChecklistElementPositionPrioritizedComparer comparer = new ChecklistElementOrganizer.ChecklistElementPositionPrioritizedComparer(context);
+			
+			foreach(List<ChecklistElementBLL> groupMemberSet in tree.Values)
+			{
+				groupMemberSet.Sort(comparer);
+			}
+		}
 		
+		
+		/// <summary>
+		/// Sorts CEBLL items based on PositionInfo stored in database, if available.
+		/// Items with PosInfo occur before items without PosInfo.
+		/// Items without PosInfo are sorted as per BeginTime, latest items appearing first.
+		/// </summary>
+		private class ChecklistElementPositionPrioritizedComparer : IComparer<ChecklistElementBLL>
+		{
+			
+			public ChecklistElementPositionPrioritizedComparer(ProcrastinHaterEntities context)
+			{
+				_context = context;
+			}
+			
+			public int Compare(ChecklistElementBLL x, ChecklistElementBLL y)
+			{
+				if (x == y)
+					return 0;
+
+				ChecklistElement ceX = _context.ChecklistElements.Where((ce) => ce.ItemID == x.ItemID).Single();
+				ChecklistElement ceY = _context.ChecklistElements.Where((ce) => ce.ItemID == y.ItemID).Single();
+
+				if (ceX.PositionInformation == null && ceY.PositionInformation == null)
+				{
+					return DateTime.Compare(ceX.BeginTime, ceY.BeginTime);
+				}
+				else if (ceX.PositionInformation != null && ceY.PositionInformation == null)
+					return -1;
+				else if (ceX.PositionInformation == null && ceY.PositionInformation != null)
+					return 1;
+				else if (ceX.PositionInformation != null && ceY.PositionInformation != null)
+				{
+					//compare database stored position info
+					
+					ChecklistElement temp = ceX;//.PositionInformation.NextItem;
+					while (temp != null)
+					{
+						if (temp == ceY)
+							break;
+						temp = temp.PositionInformation.NextItem;
+					}
+					
+					if (temp == ceY)
+						return -1;
+					else
+					{
+						temp = ceX;
+						while (temp != null)
+						{
+							if (temp == ceY)
+								break;
+							temp = temp.PositionInformation.PreviousItem;
+						}
+						
+						if (temp == ceY)
+							return 1;
+						else //HACK: Implement a proper exception.
+							throw new Exception(string.Format("The database PositionInfo table has badly formed data. Failure caused by items with respective ItemIDs {0} and {1}", ceX.ItemID.ToString(), ceY.ItemID.ToString()));
+					}
+					
+				}
+				
+				
+				throw new Exception("The universe just broke. The code never should reach here"); 
+				
+			}
+			
+			private ProcrastinHaterEntities _context;
+			
+		}
 	}
 }
