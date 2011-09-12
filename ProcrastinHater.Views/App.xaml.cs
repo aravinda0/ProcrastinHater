@@ -24,7 +24,7 @@ namespace ProcrastinHater.Views
 			
 			
 			MainWindowVM mainWinVm = new MainWindowVM(tm, gm, cm);
-			MainWindowView window = new MainWindowView();
+			MainView window = new MainView();
 			
 			mainWinVm.RequestClose += delegate { window.Close(); };
 			window.DataContext = mainWinVm;

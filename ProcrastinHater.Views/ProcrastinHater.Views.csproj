@@ -75,8 +75,8 @@
       <DependentUpon>TaskView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindowView.xaml.cs">
-      <DependentUpon>MainWindowView.xaml</DependentUpon>
+    <Compile Include="MainView.xaml.cs">
+      <DependentUpon>MainView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -85,7 +85,7 @@
   <ItemGroup>
     <Page Include="ChecklistElements\GroupView.xaml" />
     <Page Include="ChecklistElements\TaskView.xaml" />
-    <Page Include="MainWindowView.xaml" />
+    <Page Include="MainView.xaml" />
     <Page Include="Resources\Styles.xaml" />
     <Page Include="Resources\TypedDataTemplates.xaml" />
   </ItemGroup>
