@@ -3,7 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<Grid>
 		<Expander Background="LightGray" IsExpanded="{Binding IsExpanded}"
-			Height="Auto">
+			Height="Auto" BorderBrush="Black" BorderThickness="1">
 		
 			<Expander.Header>
 				<TextBlock Text="{Binding Title}"/>

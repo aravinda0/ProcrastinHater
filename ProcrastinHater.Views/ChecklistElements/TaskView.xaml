@@ -4,9 +4,48 @@
 	<Grid>
 		<Border CornerRadius="4" Background="DarkGray" Height="60"
 			Margin="2" BorderThickness="1" BorderBrush="Black">
-			<StackPanel>
+			
+			<DockPanel LastChildFill="True">
+				
+<!--			Status blob on the right-->
+				<DockPanel DockPanel.Dock="Right">
+					<DockPanel.Triggers>
+						<EventTrigger RoutedEvent="UIElement.MouseEnter">
+							<BeginStoryboard>
+								<Storyboard>
+									<DoubleAnimation Storyboard.TargetName="_opsBar" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
+								</Storyboard>
+							</BeginStoryboard>
+						</EventTrigger>
+					
+						<EventTrigger RoutedEvent="UIElement.MouseLeave">
+							<BeginStoryboard>
+								<Storyboard>
+									<DoubleAnimation Storyboard.TargetName="_opsBar" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
+								</Storyboard>
+							</BeginStoryboard>
+						</EventTrigger>
+					</DockPanel.Triggers>
+					
+					<StackPanel x:Name="_opsBar" DockPanel.Dock="Bottom" Opacity="0"
+					            Orientation="Horizontal">
+						<StackPanel.Resources>
+							<Style TargetType="{x:Type Button}">
+								<Setter Property="Width" Value="15"/>
+								<Setter Property="Height" Value="15"/>
+							</Style>
+						</StackPanel.Resources>
+
+						<Button Content="Edit"/>
+						<Button Content="Failed"/>
+						<Button Content="Delete"/>
+					</StackPanel>
+				
+					<CheckBox/>
+				</DockPanel>
+				
 				<TextBlock Text="{Binding Title}" FontSize="{Binding FontSize}"/>
-			</StackPanel>
+			</DockPanel>
 		</Border>
 	</Grid>
 </UserControl>
