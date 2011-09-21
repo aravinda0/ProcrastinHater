@@ -86,6 +86,7 @@
     <Page Include="ChecklistElements\GroupView.xaml" />
     <Page Include="ChecklistElements\TaskView.xaml" />
     <Page Include="MainView.xaml" />
+    <Page Include="Resources\ControlTemplates.xaml" />
     <Page Include="Resources\Styles.xaml" />
     <Page Include="Resources\TypedDataTemplates.xaml" />
   </ItemGroup>

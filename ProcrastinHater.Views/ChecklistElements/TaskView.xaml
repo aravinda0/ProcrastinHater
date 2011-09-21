@@ -41,7 +41,7 @@
 						<Button Content="Delete"/>
 					</StackPanel>
 				
-					<CheckBox/>
+					<CheckBox Template="{StaticResource BigCheckTemplate}"/>
 				</DockPanel>
 				
 				<TextBlock Text="{Binding Title}" FontSize="{Binding FontSize}"/>
