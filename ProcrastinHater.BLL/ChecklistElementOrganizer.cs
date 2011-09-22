@@ -18,6 +18,7 @@ namespace ProcrastinHater.BLL
 		{
 		}
 		
+		
 		/// <summary>
 		/// Get tree of items that are active for the give date.
 		/// </summary>
@@ -30,9 +31,13 @@ namespace ProcrastinHater.BLL
 			using (ProcrastinHaterEntities context = new ProcrastinHaterEntities())
 			{
 				
+				int daysOfPositionHistory = context.HardSettingsSet.Where(o => o.Check == true).Single().DaysOfHistoryToShow;
+				DateTime dateLowerLimit = date.AddDays(-daysOfPositionHistory);
+				
 				//first get tasks(leaf nodes) only.
 				var allTasksForDateGroupedByParents = (from t in context.ChecklistElements.OfType<Task>()
-				                                       where date >= t.BeginTime && (t.ResolveTime == null || date < (DateTime)t.ResolveTime)
+				                                       where ((t.ResolveTime == null) || 
+				                                              ((dateLowerLimit >= t.BeginTime && dateLowerLimit <= (DateTime)t.ResolveTime)))
 				                                       group t by t.ParentGroup into bucket
 				                                       select new {Group = bucket.Key, Items = bucket});
 				
