@@ -80,6 +80,7 @@
           <Property Name="DaysOfHistoryToShow" Type="int" Nullable="false" />
           <Property Name="Check" Type="bit" Nullable="false" />
           <Property Name="NextTimedTaskSettingsKey" Type="int" Nullable="false" />
+          <Property Name="LastPosInfoPurgeTime" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="PositionInformation">
           <Key>
@@ -426,6 +427,7 @@
           <Property Type="Int32" Name="DaysOfHistoryToShow" Nullable="false" />
           <Property Type="Boolean" Name="Check" Nullable="false" />
           <Property Type="Int32" Name="NextTimedTaskSettingsKey" Nullable="false" />
+          <Property Type="DateTime" Name="LastPosInfoPurgeTime" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -494,6 +496,7 @@
           <EntitySetMapping Name="HardSettingsSet">
             <EntityTypeMapping TypeName="ProcrastinHater.POCOEntities.HardSettings">
               <MappingFragment StoreEntitySet="HardSettings">
+                <ScalarProperty Name="LastPosInfoPurgeTime" ColumnName="LastPosInfoPurgeTime" />
                 <ScalarProperty Name="NextTimedTaskSettingsKey" ColumnName="NextTimedTaskSettingsKey" />
                 <ScalarProperty Name="Check" ColumnName="Check" />
                 <ScalarProperty Name="DaysOfHistoryToShow" ColumnName="DaysOfHistoryToShow" />

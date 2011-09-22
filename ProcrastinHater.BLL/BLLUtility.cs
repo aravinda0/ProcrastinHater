@@ -26,7 +26,7 @@ namespace ProcrastinHater.BLL
 		}
 		
 
-		//For now, add item to end of list
+		//For now, add Task or Group to end of list
 		public static void AddPositionInfo(ProcrastinHaterEntities context, 
 		                                   ChecklistElement item, int? parentGroupId)
 		{

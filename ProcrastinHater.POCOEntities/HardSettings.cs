@@ -42,6 +42,12 @@ namespace ProcrastinHater.POCOEntities
             get;
             set;
         }
+    
+        public virtual System.DateTime LastPosInfoPurgeTime
+        {
+            get;
+            set;
+        }
 
         #endregion
     }
