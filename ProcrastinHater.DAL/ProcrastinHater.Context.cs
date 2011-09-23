@@ -48,11 +48,11 @@ namespace ProcrastinHater.POCOEntities
         }
         private ObjectSet<ChecklistElement> _checklistElements;
     
-        public ObjectSet<PositionInformation> PositionInformations
+        public ObjectSet<PositionInformation> PositionInformationSet
         {
-            get { return _positionInformations  ?? (_positionInformations = CreateObjectSet<PositionInformation>("PositionInformations")); }
+            get { return _positionInformationSet  ?? (_positionInformationSet = CreateObjectSet<PositionInformation>("PositionInformationSet")); }
         }
-        private ObjectSet<PositionInformation> _positionInformations;
+        private ObjectSet<PositionInformation> _positionInformationSet;
     
         public ObjectSet<Status> Status
         {

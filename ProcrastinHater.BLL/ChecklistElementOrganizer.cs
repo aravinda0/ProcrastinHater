@@ -26,13 +26,20 @@ namespace ProcrastinHater.BLL
 		/// <returns></returns>
 		public List<ChecklistElementBLL> GetChecklistElementTreeForDate(DateTime date)
 		{
+			
+			PurgeOldPositionInfo();
+			
+			
 			List<ChecklistElementBLL> topLvlNodes = new List<ChecklistElementBLL>();
 			
 			using (ProcrastinHaterEntities context = new ProcrastinHaterEntities())
 			{
+
+                int daysOfPositionHistory = context.HardSettingsSet.Where(o => o.Check == true).Single().DaysOfHistoryToShow;
 				
-				int daysOfPositionHistory = context.HardSettingsSet.Where(o => o.Check == true).Single().DaysOfHistoryToShow;
+				
 				DateTime dateLowerLimit = date.AddDays(-daysOfPositionHistory);
+				dateLowerLimit = new DateTime(dateLowerLimit.Year, dateLowerLimit.Month, dateLowerLimit.Day);
 				
 				//first get tasks(leaf nodes) only.
 				var allTasksForDateGroupedByParents = (from t in context.ChecklistElements.OfType<Task>()
@@ -103,6 +110,37 @@ namespace ProcrastinHater.BLL
 				
 			}
 			
+		}
+		
+		private void PurgeOldPositionInfo()
+		{
+			
+			using (ProcrastinHaterEntities context = new ProcrastinHaterEntities())
+			{
+				
+				HardSettings settings = context.HardSettingsSet.Single(hs => hs.Check == true);
+	            DateTime lastPurgeTime = settings.LastPosInfoPurgeTime;
+	
+	            //purge items when a day or more has elapsed since the last purge.
+	            if ((DateTime.Now - lastPurgeTime).Days > 0)
+	            {
+                	int daysOfPositionHistory = settings.DaysOfHistoryToShow;
+	            	DateTime dateLowerLimit = DateTime.Now.AddDays(-daysOfPositionHistory);
+	            	
+	                var itemsToStripPosInfoFrom = (from ce in context.ChecklistElements
+	                                               where ((ce.PositionInformation != null) && ((DateTime)ce.ResolveTime < dateLowerLimit))
+	                                               select ce);
+	
+	                foreach (var item in itemsToStripPosInfoFrom)
+	                	BLLUtility.DeletePositionInfo(context, item);
+	                
+	                settings.LastPosInfoPurgeTime = DateTime.Now;
+	                
+	                //Commit purge.
+	                context.SaveChanges();
+
+            	}
+			}
 		}
 		
 		private void SortTreeByPositionInfo(ProcrastinHaterEntities context, Dictionary<int, List<ChecklistElementBLL>> tree)

@@ -32,7 +32,7 @@ namespace ProcrastinHater.BLL
 		{
 			item.PositionInformation = new PositionInformation();
 			
-			var lastItemOfGroup = (from pos in context.PositionInformations
+			var lastItemOfGroup = (from pos in context.PositionInformationSet
 			                       where ((pos.ChecklistElement.ParentGroupID == parentGroupId) && (pos.NextItemID == null))
 			                       select pos.ChecklistElement).SingleOrDefault();
 			
@@ -43,6 +43,22 @@ namespace ProcrastinHater.BLL
 				item.PositionInformation.NextItemID = null;
 			}
 		}
+		
+		
+		public static void DeletePositionInfo(ProcrastinHaterEntities context,
+		                                      ChecklistElement item)
+		{
+            ChecklistElement prevItem = item.PositionInformation.PreviousItem;
+            ChecklistElement nextItem = item.PositionInformation.NextItem;
+            if (prevItem != null)
+                prevItem.PositionInformation.NextItem = nextItem;
+
+            if (nextItem != null)
+                nextItem.PositionInformation.PreviousItem = prevItem;
+            
+            context.PositionInformationSet.DeleteObject(item.PositionInformation);			
+		}
+		
 		
         #region Entity class to BLL class conversion
         

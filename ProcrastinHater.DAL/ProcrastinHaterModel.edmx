@@ -235,22 +235,22 @@
       <Schema Namespace="ProcrastinHater.POCOEntities" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
         <EntityContainer Name="ProcrastinHaterEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="ChecklistElements" EntityType="ProcrastinHater.POCOEntities.ChecklistElement" />
-          <EntitySet Name="PositionInformations" EntityType="ProcrastinHater.POCOEntities.PositionInformation" />
+          <EntitySet Name="PositionInformationSet" EntityType="ProcrastinHater.POCOEntities.PositionInformation" />
           <AssociationSet Name="FK_ChecklistElements_Groups" Association="ProcrastinHater.POCOEntities.FK_ChecklistElements_Groups">
             <End Role="Groups" EntitySet="ChecklistElements" />
             <End Role="ChecklistElements" EntitySet="ChecklistElements" />
           </AssociationSet>
           <AssociationSet Name="FK_PositionInfoItemID_ChecklistElements" Association="ProcrastinHater.POCOEntities.FK_PositionInfoItemID_ChecklistElements">
             <End Role="ChecklistElements" EntitySet="ChecklistElements" />
-            <End Role="PositionInformation" EntitySet="PositionInformations" />
+            <End Role="PositionInformation" EntitySet="PositionInformationSet" />
           </AssociationSet>
           <AssociationSet Name="FK_PositionInfoNextItemID_ChecklistElements" Association="ProcrastinHater.POCOEntities.FK_PositionInfoNextItemID_ChecklistElements">
             <End Role="ChecklistElements" EntitySet="ChecklistElements" />
-            <End Role="PositionInformation" EntitySet="PositionInformations" />
+            <End Role="PositionInformation" EntitySet="PositionInformationSet" />
           </AssociationSet>
           <AssociationSet Name="FK_PositionInfoPreviousItemID_ChecklistElements" Association="ProcrastinHater.POCOEntities.FK_PositionInfoPreviousItemID_ChecklistElements">
             <End Role="ChecklistElements" EntitySet="ChecklistElements" />
-            <End Role="PositionInformation" EntitySet="PositionInformations" />
+            <End Role="PositionInformation" EntitySet="PositionInformationSet" />
           </AssociationSet>
           <EntitySet Name="Status" EntityType="ProcrastinHater.POCOEntities.Status" />
           <EntitySet Name="TimedTaskSettingsSet" EntityType="ProcrastinHater.POCOEntities.TimedTaskSettings" />
@@ -463,7 +463,7 @@
                 <ScalarProperty Name="IsExpanded" ColumnName="IsExpanded" />
               </MappingFragment>
             </EntityTypeMapping></EntitySetMapping>
-          <EntitySetMapping Name="PositionInformations"><EntityTypeMapping TypeName="ProcrastinHater.POCOEntities.PositionInformation"><MappingFragment StoreEntitySet="PositionInformation">
+          <EntitySetMapping Name="PositionInformationSet"><EntityTypeMapping TypeName="ProcrastinHater.POCOEntities.PositionInformation"><MappingFragment StoreEntitySet="PositionInformation">
             <ScalarProperty Name="ItemID" ColumnName="ItemID" />
             <ScalarProperty Name="NextItemID" ColumnName="NextItemID" />
             <ScalarProperty Name="PreviousItemID" ColumnName="PreviousItemID" />

@@ -50,6 +50,7 @@ namespace ProcrastinHater.BLL
 			
 		}
 		
+		
 		private static HardSettings GetHardSettings(ProcrastinHaterEntities context)
 		{
 			HardSettings settings = (from s in context.HardSettingsSet
