@@ -1,6 +1,7 @@
 ﻿<UserControl x:Class="ProcrastinHater.Views.ChecklistElements.TaskView"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:ProcrastinHater.Views.Controls">
 	<Grid>
 		<Border CornerRadius="4" Background="DarkGray" Height="60"
 			Margin="2" BorderThickness="1" BorderBrush="Black">
@@ -39,6 +40,7 @@
 						<Button Content="Edit"/>
 						<Button Content="Failed"/>
 						<Button Content="Delete"/>
+						
 					</StackPanel>
 				
 					<CheckBox Template="{StaticResource BigCheckTemplate}"/>

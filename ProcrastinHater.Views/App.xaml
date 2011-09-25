@@ -8,6 +8,8 @@
 				<ResourceDictionary Source="Resources/Styles.xaml"/>
 				<ResourceDictionary Source="Resources/TypedDataTemplates.xaml"/>
 				<ResourceDictionary Source="Resources/ControlTemplates.xaml"/>
+				
+				<ResourceDictionary Source="Controls/ImageButtonResources.xaml"/>
 		
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>

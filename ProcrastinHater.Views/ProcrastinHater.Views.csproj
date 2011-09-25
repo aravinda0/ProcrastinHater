@@ -75,6 +75,7 @@
       <DependentUpon>TaskView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controls\ImageButton.cs" />
     <Compile Include="MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -85,6 +86,7 @@
   <ItemGroup>
     <Page Include="ChecklistElements\GroupView.xaml" />
     <Page Include="ChecklistElements\TaskView.xaml" />
+    <Page Include="Controls\ImageButtonResources.xaml" />
     <Page Include="MainView.xaml" />
     <Page Include="Resources\ControlTemplates.xaml" />
     <Page Include="Resources\Styles.xaml" />
@@ -106,10 +108,15 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ChecklistElements" />
+    <Folder Include="Controls" />
     <Folder Include="Resources" />
+    <Folder Include="Resources\Images" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.Config" />
+    <Resource Include="Resources\Images\CheckMark.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>
