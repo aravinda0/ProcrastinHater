@@ -3,9 +3,8 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:ProcrastinHater.Views.Controls">
 	<Grid>
-		<Border CornerRadius="4" Background="DarkGray" Height="60"
-			Margin="2" BorderThickness="1" BorderBrush="Black">
-			
+		
+		<Border Style="{StaticResource TaskItemStyle}">
 			<DockPanel LastChildFill="True">
 				
 <!--			Status blob on the right-->
@@ -46,7 +45,8 @@
 					<CheckBox Template="{StaticResource BigCheckTemplate}"/>
 				</DockPanel>
 				
-				<TextBlock Text="{Binding Title}" FontSize="{Binding FontSize}"/>
+				<TextBlock Text="{Binding Title}" FontSize="{Binding FontSize}" Foreground="Black"
+					VerticalAlignment="Center" HorizontalAlignment="Center"/>
 			</DockPanel>
 		</Border>
 	</Grid>

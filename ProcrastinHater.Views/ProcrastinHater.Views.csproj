@@ -89,6 +89,7 @@
     <Page Include="Controls\ImageButtonResources.xaml" />
     <Page Include="MainView.xaml" />
     <Page Include="Resources\ControlTemplates.xaml" />
+    <Page Include="Resources\MiscResources.xaml" />
     <Page Include="Resources\Styles.xaml" />
     <Page Include="Resources\TypedDataTemplates.xaml" />
   </ItemGroup>
