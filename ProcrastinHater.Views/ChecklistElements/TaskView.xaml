@@ -4,7 +4,7 @@
 	xmlns:controls="clr-namespace:ProcrastinHater.Views.Controls">
 	<Grid>
 		
-		<Border Style="{StaticResource TaskItemStyle}">
+		<Border Style="{StaticResource TaskItemBorderStyle}" Padding="2">
 			<DockPanel LastChildFill="True">
 				
 <!--			Status blob on the right-->
@@ -26,6 +26,7 @@
 							</BeginStoryboard>
 						</EventTrigger>
 					</DockPanel.Triggers>
+										
 					
 					<StackPanel x:Name="_opsBar" DockPanel.Dock="Bottom" Opacity="0"
 					            Orientation="Horizontal">
@@ -42,12 +43,26 @@
 						
 					</StackPanel>
 				
-					<CheckBox Template="{StaticResource BigCheckTemplate}"/>
 				</DockPanel>
 				
 				<TextBlock Text="{Binding Title}" FontSize="{Binding FontSize}" Foreground="Black"
 					VerticalAlignment="Center" HorizontalAlignment="Center"/>
 			</DockPanel>
+		
+
+		
 		</Border>
+		
+		
+<!--	Status checkbox-->
+		<CheckBox Template="{StaticResource BigCheckTemplate}" Width="55" Height="55"  HorizontalAlignment="Right">
+			<CheckBox.RenderTransform>
+				<TransformGroup>
+					<TranslateTransform  Y="-3"/>
+					<RotateTransform Angle="5"/>
+				</TransformGroup>
+			</CheckBox.RenderTransform>
+		</CheckBox>
+		
 	</Grid>
 </UserControl>
