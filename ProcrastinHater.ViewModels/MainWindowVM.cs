@@ -35,44 +35,64 @@ namespace ProcrastinHater.ViewModels
 			GroupBLL dummyBllRootNode = new GroupBLL(0,0, new GroupInfo(), null);
 			dummyBllRootNode.Items = _ceOrganizer.GetChecklistElementTreeForDate(DateTime.Now);
 			
-			ChecklistElementVM dummyVmRootNode = CreateVmTree(dummyBllRootNode);
-			ChecklistTree = (dummyVmRootNode as GroupVM).Items;
+			GroupVM dummyVmRootNode = (CreateVmTree(dummyBllRootNode, null) as GroupVM);
+			dummyVmRootNode.CurrentIndex = -1;
+			ChecklistTreeRoot = dummyVmRootNode;
 		}
 		
 		#endregion ctor
 		
 		
-		public ObservableCollection<ChecklistElementVM> ChecklistTree
+		public GroupVM ChecklistTreeRoot
 		{
-			get {return _checklistTree;}
+			get {return _checklistTreeRoot;}
 			set
 			{
-				if (_checklistTree == value)
+				if (_checklistTreeRoot == value)
 					return;
 				
-				_checklistTree = value;
-				this.OnPropertyChanged("ChecklistTree");
+				_checklistTreeRoot = value;
+				this.OnPropertyChanged("ChecklistTreeRoot");
 			}
 		}		
 		
+		public ChecklistElementVM CurrentItem
+		{
+			get {return _currentItem;}
+			set
+			{
+				if (_currentItem != null && _currentItem.ParentGroup != value.ParentGroup)
+				{
+					//de-select old item
+					_currentItem.ParentGroup.CurrentIndex = -1;
+				}
+				
+				_currentItem = value;
+//				this.OnPropertyChanged("CurrentItem");
+			}
+		}
 		
 		
 		
-		
-		private ChecklistElementVM CreateVmTree(ChecklistElementBLL bllNode)
+		private ChecklistElementVM CreateVmTree(ChecklistElementBLL bllNode, GroupVM parentGroup)
 		{
 			ChecklistElementVM ret = null;
 			
 			if (bllNode is TaskBLL)
+			{
 				ret = EntityConverter.TaskBllToTaskVm(bllNode as TaskBLL);
+				ret.ParentGroup = parentGroup;
+			}
 			else if (bllNode is GroupBLL)
 			{
 				ret = EntityConverter.GroupBllToGroupVm(bllNode as GroupBLL);
-				GroupVM group = ret as GroupVM;
+				GroupVM grp = ret as GroupVM;
 				
-				group.Items = new ObservableCollection<ChecklistElementVM>();
+				grp.ParentGroup = parentGroup;
+				grp.Items = new ObservableCollection<ChecklistElementVM>();
+				
 				foreach (ChecklistElementBLL ce in (bllNode as GroupBLL).Items)
-					group.Items.Add(CreateVmTree(ce));
+					grp.Items.Add(CreateVmTree(ce, grp));
 				
 			}
 			
@@ -87,7 +107,9 @@ namespace ProcrastinHater.ViewModels
 		IChecklistElementOrganizer _ceOrganizer;
 		
 		
-		ObservableCollection<ChecklistElementVM> _checklistTree;
+		GroupVM _checklistTreeRoot;
+		
+		ChecklistElementVM _currentItem;
 		
 		#endregion private fields
 	}

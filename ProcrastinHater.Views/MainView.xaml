@@ -5,6 +5,8 @@
 	WindowStartupLocation="CenterScreen">
 	<Grid>
 		<ListBox Width="600" Height="630" Style="{StaticResource GroupListBoxStyle}"
-			ItemsSource="{Binding ChecklistTree}" Background="Transparent"/>
+			ItemsSource="{Binding ChecklistTreeRoot.Items}" Background="Transparent"
+			SelectedItem="{Binding CurrentItem, Mode=OneWayToSource}"
+			SelectedIndex="{Binding ChecklistTreeRoot.CurrentIndex, Mode=TwoWay}"/>
 	</Grid>
 </Window>

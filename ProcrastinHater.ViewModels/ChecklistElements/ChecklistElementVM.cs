@@ -38,6 +38,8 @@ namespace ProcrastinHater.ViewModels.ChecklistElements
 			
 			ResolveTime = resolveTime;
 			
+			ParentGroup = parentGroup;
+			
 		}
 		
 		#region Mapped properties
@@ -156,7 +158,6 @@ namespace ProcrastinHater.ViewModels.ChecklistElements
 		#endregion Mapped properties
 		
 
-
 		#region private fields
 		
 		string _title;
@@ -166,6 +167,8 @@ namespace ProcrastinHater.ViewModels.ChecklistElements
 		string _backgroundColor;
 		DateTime? _resolveTime;
 		GroupVM  _parentGroup;
+		
+		ChecklistElementVM _parentContainer;
 		
 		#endregion private fields
 		

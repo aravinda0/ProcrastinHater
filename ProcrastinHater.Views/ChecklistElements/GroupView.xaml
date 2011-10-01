@@ -15,7 +15,8 @@
 		
 			<Expander.Content>
 				<ListBox Style="{StaticResource GroupListBoxStyle}"
-					ItemsSource="{Binding Items}"/>
+					ItemsSource="{Binding Items}" SelectedIndex="{Binding CurrentIndex, Mode=TwoWay}"
+					SelectedItem="{Binding DataContext.CurrentItem, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Mode=OneWayToSource}"/>
 			</Expander.Content>
 		</Expander>
 </Border>

@@ -14,12 +14,14 @@ namespace ProcrastinHater.ViewModels.ChecklistElements
 		public GroupVM()
 		{
 			IsExpanded = true;
+			CurrentIndex = -1;
 		}
 		
 		public GroupVM(int id, GroupInfo groupInfo, DateTime? resolveTime, GroupVM parentGroup = null)
 			:base(id, groupInfo, resolveTime, parentGroup)
 		{
 			IsExpanded = groupInfo.IsExpanded;
+			CurrentIndex = -1;
 		}
 		
 		#region Mapped Group properties
@@ -39,7 +41,22 @@ namespace ProcrastinHater.ViewModels.ChecklistElements
 		
 		#endregion Mapped Group properties
 		
+		#region Presentation related properties
 		
+		public int CurrentIndex
+		{
+			get {return _currentIndex;}
+			set
+			{
+				if (_currentIndex == value)
+					return;
+
+				_currentIndex = value;
+				this.OnPropertyChanged("CurrentIndex");
+			}
+		}
+		
+		#endregion		
 		
 		public ObservableCollection<ChecklistElementVM> Items
 		{
@@ -50,6 +67,8 @@ namespace ProcrastinHater.ViewModels.ChecklistElements
 		#region private fields
 		
 		bool _isExpanded;
+		
+		int _currentIndex;
 		
 		#endregion private fields
 		
