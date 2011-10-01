@@ -9,8 +9,8 @@
 	
         <!--Control colors.-->
         <Color x:Key="WindowColor">#FFE8EDF9</Color>
-        <Color x:Key="ContentAreaColorLight">#FFC5CBF9</Color>
-        <Color x:Key="ContentAreaColorDark">#FF756122</Color>
+        <Color x:Key="ContentAreaColorLight">#FF67ABDD</Color>
+        <Color x:Key="ContentAreaColorDark">#FF67AADC</Color>
         
         <Color x:Key="DisabledControlLightColor">#FFE8EDF9</Color>
         <Color x:Key="DisabledControlDarkColor">#FFC5CBF9</Color>
@@ -19,12 +19,13 @@
         <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
         <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
         
-        <Color x:Key="ControlLightColor">#FF967F36</Color>
-        <Color x:Key="ControlMediumColor">#FF756122</Color>
+        <Color x:Key="ControlLightColor">#FFC5E2F7</Color>
+        <Color x:Key="ControlMediumColor">#FF67ABDD</Color>
         <Color x:Key="ControlDarkColor">#FF69571E</Color>
+	
         
-        <Color x:Key="ControlMouseOverColor">#FF5A4510</Color>
-        <Color x:Key="ControlPressedColor">#FF4A390D</Color>
+        <Color x:Key="ControlMouseOverColor">#FF3174C3</Color>
+        <Color x:Key="ControlPressedColor">#FF19467B</Color>
         
         
         <Color x:Key="GlyphColor">#FF444444</Color>

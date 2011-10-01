@@ -3,22 +3,22 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<Grid>
 		<Border CornerRadius="10" BorderBrush="Black" BorderThickness="3">
-		<Expander Template="{StaticResource GroupExpanderTemplate}" IsExpanded="{Binding IsExpanded}"
-			Height="Auto" BorderBrush="Black" BorderThickness="3">
-		
-			<Expander.Header>
-				<StackPanel Height="25" VerticalAlignment="Center">
-					<TextBlock Text="{Binding Title}" Foreground="Black" 
-					           FontSize="{Binding FontSize}" FontWeight="Bold"/>
-				</StackPanel>
-			</Expander.Header>
-		
-			<Expander.Content>
-				<ListBox Style="{StaticResource GroupListBoxStyle}"
-					ItemsSource="{Binding Items}" SelectedIndex="{Binding CurrentIndex, Mode=TwoWay}"
-					SelectedItem="{Binding DataContext.CurrentItem, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Mode=OneWayToSource}"/>
-			</Expander.Content>
-		</Expander>
-</Border>
+			<Expander Template="{StaticResource GroupExpanderTemplate}" IsExpanded="{Binding IsExpanded}"
+				Height="Auto" BorderBrush="Black" BorderThickness="3">
+			
+				<Expander.Header>
+					<StackPanel Height="25" VerticalAlignment="Center">
+						<TextBlock Text="{Binding Title}" Foreground="Black" 
+						           FontSize="{Binding FontSize}" FontWeight="Bold"/>
+					</StackPanel>
+				</Expander.Header>
+			
+				<Expander.Content>
+					<ListBox Style="{StaticResource GroupListBoxStyle}"
+						ItemsSource="{Binding Items}" SelectedIndex="{Binding CurrentIndex, Mode=TwoWay}"
+						SelectedItem="{Binding DataContext.CurrentItem, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Mode=OneWayToSource}"/>
+				</Expander.Content>
+			</Expander>
+		</Border>
 	</Grid>
 </UserControl>

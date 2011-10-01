@@ -6,7 +6,7 @@
 		<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
 <!--		<Setter Property="VerticalContentAlignment" Value="Stretch"/>-->
 		<Setter Property="Margin" Value="2"/>
-		<Setter Property="Background" Value="#FF756122"/>
+		<Setter Property="Background" Value="Transparent"/>
 	</Style>
 
 
@@ -16,7 +16,7 @@
 		<Setter Property="Margin" Value="2"/>
 		<Setter Property="BorderThickness" Value="4"/>
 		<Setter Property="BorderBrush" Value="Black"/>
-		<Setter Property="Background" Value="#FFB0912D"/>
+		<Setter Property="Background" Value="#FFBBD1E3"/>
 	</Style>
 
 
