@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Windows.Input;
 using ElementalMvvm;
 using ProcrastinHater.BusinessInterfaces;
 using ProcrastinHater.BusinessInterfaces.BLLClasses;
@@ -25,20 +27,12 @@ namespace ProcrastinHater.ViewModels
 			_groupsManager = groupsManager;
 			_ceOrganizer = ceOrganizer;
 			
-			SetupVmTree();
-		}
-		
-	
-		
-		private void SetupVmTree()
-		{
-			GroupBLL dummyBllRootNode = new GroupBLL(0,0, new GroupInfo(), null);
-			dummyBllRootNode.Items = _ceOrganizer.GetChecklistElementTreeForDate(DateTime.Now);
+			DateTime today = DateTime.Now;
+			_currentDate = new DateTime(today.Year, today.Month, today.Day);
 			
-			GroupVM dummyVmRootNode = (CreateVmTree(dummyBllRootNode, null) as GroupVM);
-			dummyVmRootNode.CurrentIndex = -1;
-			ChecklistTreeRoot = dummyVmRootNode;
+			GetVmTreeForDate(_currentDate);
 		}
+		
 		
 		#endregion ctor
 		
@@ -72,9 +66,60 @@ namespace ProcrastinHater.ViewModels
 			}
 		}
 		
+		public string CurrentDateString
+		{
+			get
+			{
+				return string.Format("{0} {1} {2}", _currentDate.Day.ToString(), 
+				                     _currentDate.Month.ToString(), _currentDate.Year.ToString());
+			}
+		}
+		
+		public ICommand NextDayCommand
+		{
+			get
+			{
+				if (_nextDayCmd == null)
+					_nextDayCmd = new RelayCommand((o) =>
+					                               {
+					                               	_currentDate.AddDays(1);
+					                               	this.GetVmTreeForDate(_currentDate);
+					                               });
+				
+				return _nextDayCmd;
+			}
+		}
+		
+		public ICommand PreviousDayCommand
+		{
+			get
+			{
+				if (_previousDayCmd == null)
+					_previousDayCmd = new RelayCommand((o) =>
+					                               {
+					                               	_currentDate.AddDays(-1);
+					                               	this.GetVmTreeForDate(_currentDate);
+					                               });
+				
+				return _previousDayCmd;
+			}
+		}		
 		
 		
-		private ChecklistElementVM CreateVmTree(ChecklistElementBLL bllNode, GroupVM parentGroup)
+		#region private helpers
+		
+		private void GetVmTreeForDate(DateTime date)
+		{
+			GroupBLL dummyBllRootNode = new GroupBLL(0,0, new GroupInfo(), null);
+			dummyBllRootNode.Items = _ceOrganizer.GetChecklistElementTreeForDate(date);
+			
+			GroupVM dummyVmRootNode = (ConstructVmTree(dummyBllRootNode, null) as GroupVM);
+			dummyVmRootNode.CurrentIndex = -1;
+			ChecklistTreeRoot = dummyVmRootNode;
+			
+		}		
+		
+		private ChecklistElementVM ConstructVmTree(ChecklistElementBLL bllNode, GroupVM parentGroup)
 		{
 			ChecklistElementVM ret = null;
 			
@@ -92,13 +137,14 @@ namespace ProcrastinHater.ViewModels
 				grp.Items = new ObservableCollection<ChecklistElementVM>();
 				
 				foreach (ChecklistElementBLL ce in (bllNode as GroupBLL).Items)
-					grp.Items.Add(CreateVmTree(ce, grp));
+					grp.Items.Add(ConstructVmTree(ce, grp));
 				
 			}
 			
 			return ret;
 		}
 		
+		#endregion private helpers
 		
 		#region private fields
 		
@@ -110,6 +156,11 @@ namespace ProcrastinHater.ViewModels
 		GroupVM _checklistTreeRoot;
 		
 		ChecklistElementVM _currentItem;
+		DateTime _currentDate;
+		
+		RelayCommand _nextDayCmd;
+		RelayCommand _previousDayCmd;
+		
 		
 		#endregion private fields
 	}

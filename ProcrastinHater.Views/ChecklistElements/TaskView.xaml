@@ -28,20 +28,20 @@
 					</DockPanel.Triggers>
 										
 					
-					<StackPanel x:Name="_opsBar" DockPanel.Dock="Bottom" Opacity="0"
+					<VirtualizingStackPanel x:Name="_opsBar" DockPanel.Dock="Bottom" Opacity="0"
 					            Orientation="Horizontal">
-						<StackPanel.Resources>
+						<VirtualizingStackPanel.Resources>
 							<Style TargetType="{x:Type Button}">
 								<Setter Property="Width" Value="15"/>
 								<Setter Property="Height" Value="15"/>
 							</Style>
-						</StackPanel.Resources>
+						</VirtualizingStackPanel.Resources>
 
 						<Button Content="Edit"/>
 						<Button Content="Failed"/>
 						<Button Content="Delete"/>
 						
-					</StackPanel>
+					</VirtualizingStackPanel>
 				
 				</DockPanel>
 				

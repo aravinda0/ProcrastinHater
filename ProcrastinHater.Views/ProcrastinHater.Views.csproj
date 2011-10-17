@@ -4,7 +4,7 @@
     <ProjectGuid>{11520460-ABE7-45B7-958F-98D9D06389DA}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>ProcrastinHater.Views</RootNamespace>
     <AssemblyName>ProcrastinHater.Views</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>

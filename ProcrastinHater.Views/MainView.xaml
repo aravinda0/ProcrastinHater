@@ -11,9 +11,50 @@
         <!--<SolidColorBrush Color="#FFEBF5FC"/>-->
     </Window.Background>
 	<Grid>
-		<ListBox Width="600" Height="630" Style="{StaticResource GroupListBoxStyle}"
+		<Grid.RowDefinitions>
+			<RowDefinition Height="100"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		
+		<StackPanel Grid.Row="0">
+			<TextBlock FontWeight="Bold" HorizontalAlignment="Center" 
+				Text="{Binding CurrentDateString}" FontSize="24"/>
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+				<Button Content="&lt;" Width="75" Height="30" Command="{Binding PreviousDayCommand}"/>
+				<Button Content="&gt;" Width="75" Height="30" Command="{Binding NextDayCommand}"/>
+			</StackPanel>
+		</StackPanel>
+		
+		<ListBox Grid.Row="1" Width="600" Height="Auto" Style="{StaticResource GroupListBoxStyle}"
 			ItemsSource="{Binding ChecklistTreeRoot.Items}" Background="Transparent"
 			SelectedItem="{Binding CurrentItem, Mode=OneWayToSource}"
-			SelectedIndex="{Binding ChecklistTreeRoot.CurrentIndex, Mode=TwoWay}"/>
+			SelectedIndex="{Binding ChecklistTreeRoot.CurrentIndex, Mode=TwoWay}"
+			VirtualizingStackPanel.VirtualizationMode="Recycling" 
+			ScrollViewer.CanContentScroll="True"
+			>
+			<ListBox.ItemsPanel>
+				<ItemsPanelTemplate>
+					<VirtualizingStackPanel/>
+				</ItemsPanelTemplate>
+			</ListBox.ItemsPanel>
+		    <ListBox.Template>
+		        <ControlTemplate>
+		        <Border
+		            BorderThickness="{TemplateBinding Border.BorderThickness}"
+		            Padding="{TemplateBinding Control.Padding}"
+		            BorderBrush="{TemplateBinding Border.BorderBrush}"
+		            Background="{TemplateBinding Panel.Background}"
+		            SnapsToDevicePixels="True">
+		                <ScrollViewer
+		                    Padding="{TemplateBinding Control.Padding}"
+		                    Focusable="False">
+		                    <ItemsPresenter
+		                        SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+		                </ScrollViewer>
+		            </Border>
+		            </ControlTemplate>
+		    </ListBox.Template>
+		
+		</ListBox>
 	</Grid>
 </Window>
