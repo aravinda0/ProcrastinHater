@@ -12,7 +12,7 @@
 
 	<Style x:Key="TaskItemBorderStyle" TargetType="Border">
 		<Setter Property="CornerRadius" Value="10"/>
-		<Setter Property="Height" Value="55"/>
+		<Setter Property="MinHeight" Value="40"/>
 		<Setter Property="Margin" Value="2"/>
 		<Setter Property="BorderThickness" Value="4"/>
 		<Setter Property="BorderBrush" Value="Black"/>

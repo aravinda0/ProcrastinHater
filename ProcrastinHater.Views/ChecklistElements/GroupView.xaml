@@ -7,7 +7,7 @@
 				Height="Auto" BorderBrush="Black" BorderThickness="3">
 			
 				<Expander.Header>
-					<StackPanel Height="25" VerticalAlignment="Center">
+					<StackPanel VerticalAlignment="Center">
 						<TextBlock Text="{Binding Title}" Foreground="Black" 
 						           FontSize="{Binding FontSize}" FontWeight="Bold"/>
 					</StackPanel>

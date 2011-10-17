@@ -2,60 +2,59 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:ProcrastinHater.Views.Controls">
-	<Grid>
+	<Grid>			
 		
 		<Border Style="{StaticResource TaskItemBorderStyle}" Padding="2">
-			<DockPanel LastChildFill="True">
-				
-<!--			Status blob on the right-->
-				<DockPanel DockPanel.Dock="Right">
-					<DockPanel.Triggers>
-						<EventTrigger RoutedEvent="UIElement.MouseEnter">
-							<BeginStoryboard>
-								<Storyboard>
-									<DoubleAnimation Storyboard.TargetName="_opsBar" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
-								</Storyboard>
-							</BeginStoryboard>
-						</EventTrigger>
+			
+			<Border.Triggers>
+				<EventTrigger RoutedEvent="UIElement.MouseEnter">
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation Storyboard.TargetName="_opsBar" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
+						</Storyboard>
+					</BeginStoryboard>
+				</EventTrigger>
+			
+				<EventTrigger RoutedEvent="UIElement.MouseLeave">
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation Storyboard.TargetName="_opsBar" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
+						</Storyboard>
+					</BeginStoryboard>
+				</EventTrigger>
+			</Border.Triggers>			
+	
+			<StackPanel>
+				<TextBlock Text="{Binding Title}" FontSize="{Binding FontSize}" 
+				           Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center"
+							Margin="0,0,45,0"/>
+			
+				<StackPanel Orientation="Horizontal" Margin="0,0,45,0" HorizontalAlignment="Right">
+<!--					<TextBlock/> Time left-->
 					
-						<EventTrigger RoutedEvent="UIElement.MouseLeave">
-							<BeginStoryboard>
-								<Storyboard>
-									<DoubleAnimation Storyboard.TargetName="_opsBar" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
-								</Storyboard>
-							</BeginStoryboard>
-						</EventTrigger>
-					</DockPanel.Triggers>
-										
-					
-					<VirtualizingStackPanel x:Name="_opsBar" DockPanel.Dock="Bottom" Opacity="0"
-					            Orientation="Horizontal">
-						<VirtualizingStackPanel.Resources>
+					<StackPanel x:Name="_opsBar" Opacity="0"
+					            Orientation="Horizontal" HorizontalAlignment="Right">
+						<StackPanel.Resources>
 							<Style TargetType="{x:Type Button}">
 								<Setter Property="Width" Value="15"/>
 								<Setter Property="Height" Value="15"/>
 							</Style>
-						</VirtualizingStackPanel.Resources>
-
+						</StackPanel.Resources>						
+									
 						<Button Content="Edit"/>
 						<Button Content="Failed"/>
 						<Button Content="Delete"/>
 						
-					</VirtualizingStackPanel>
-				
-				</DockPanel>
-				
-				<TextBlock Text="{Binding Title}" FontSize="{Binding FontSize}" Foreground="Black"
-					VerticalAlignment="Center" HorizontalAlignment="Center"/>
-			</DockPanel>
-		
-
-		
+					</StackPanel>
+					
+				</StackPanel>
+			</StackPanel>
 		</Border>
 		
 		
 <!--	Status checkbox-->
-		<CheckBox Template="{StaticResource BigCheckTemplate}" Width="55" Height="55"  HorizontalAlignment="Right">
+		<CheckBox Template="{StaticResource BigCheckTemplate}" Width="45" Height="45"  
+		          HorizontalAlignment="Right">
 			<CheckBox.RenderTransform>
 				<TransformGroup>
 					<TranslateTransform  Y="-3"/>
