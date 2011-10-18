@@ -14,8 +14,9 @@ namespace ProcrastinHater.BLL
 	/// </summary>
 	public class ChecklistElementOrganizer : IChecklistElementOrganizer
 	{
-		public ChecklistElementOrganizer()
+		internal ChecklistElementOrganizer(ProcrastinHaterEntities context)
 		{
+			_context = context;
 		}
 		
 		
@@ -32,17 +33,15 @@ namespace ProcrastinHater.BLL
 			
 			List<ChecklistElementBLL> topLvlNodes = new List<ChecklistElementBLL>();
 			
-			using (ProcrastinHaterEntities context = new ProcrastinHaterEntities())
-			{
 				
-//                int daysOfPositionHistory = context.HardSettingsSet.Where(o => o.Check == true).Single().DaysOfHistoryToShow;
+//                int daysOfPositionHistory = _context.HardSettingsSet.Where(o => o.Check == true).Single().DaysOfHistoryToShow;
 //
 //				DateTime dateLowerLimit = date.AddDays(-daysOfPositionHistory);
 //				dateLowerLimit = new DateTime(dateLowerLimit.Year, dateLowerLimit.Month, dateLowerLimit.Day);
 //                
 //				Func<ChecklistElement, bool> fc = (ce) => ((ce is Task) && ((ce.ResolveTime == null) || ((dateLowerLimit >= ce.BeginTime && dateLowerLimit <= (DateTime)ce.ResolveTime))));
 //
-//				var st = (from ce in context.ChecklistElements
+//				var st = (from ce in _context.ChecklistElements
 //				          where (((ce is Task) && fc(ce)) ||
 //				                 ((ce is Group) && (ce as Group).ChecklistElements.Any(ce2 => fc(ce2))))
 //				          select ce).ToList();
@@ -53,14 +52,14 @@ namespace ProcrastinHater.BLL
 //				
 //
 //				//first get tasks(leaf nodes) only.
-//				var allTasksForDateGroupedByParents = (from t in context.ChecklistElements.OfType<Task>()
+//				var allTasksForDateGroupedByParents = (from t in _context.ChecklistElements.OfType<Task>()
 //				                                       where ((t.ResolveTime == null) || 
 //				                                              ((dateLowerLimit >= t.BeginTime && dateLowerLimit <= (DateTime)t.ResolveTime)))
 //				                                       group t by t.ParentGroup into bucket
 //				                                       select new {Group = bucket.Key, Items = bucket}).ToList();				
 //				
 
-//				var v = context.ChecklistElements.First();
+//				var v = _context.ChecklistElements.First();
 //				int x = v.ItemID;
 ////				int x = 3;
 //				
@@ -69,127 +68,121 @@ namespace ProcrastinHater.BLL
 ////					i = 2 + 4;
 //				
 //				return (x > 0)?null:new List<ChecklistElementBLL>();
-				
-				#region old try
+			
+			#region old try
 
-				#region commenting helper
-                int daysOfPositionHistory = context.HardSettingsSet.Where(o => o.Check == true).Single().DaysOfHistoryToShow;
-				
-				
-				DateTime dateLowerLimit = date.AddDays(-daysOfPositionHistory);
-				dateLowerLimit = new DateTime(dateLowerLimit.Year, dateLowerLimit.Month, dateLowerLimit.Day);
-				
+			#region commenting helper
+            int daysOfPositionHistory = _context.HardSettingsSet.Where(o => o.Check == true).Single().DaysOfHistoryToShow;
+			
+			
+			DateTime dateLowerLimit = date.AddDays(-daysOfPositionHistory);
+			dateLowerLimit = new DateTime(dateLowerLimit.Year, dateLowerLimit.Month, dateLowerLimit.Day);
+			
 
-				//first get tasks(leaf nodes) only.
-				var allTasksForDateGroupedByParents = (from t in context.ChecklistElements.OfType<Task>()
-				                                       where ((t.ResolveTime == null) || 
-				                                              ((dateLowerLimit >= t.BeginTime && dateLowerLimit <= (DateTime)t.ResolveTime)))
-				                                       group t by t.ParentGroup into bucket
-				                                       select new {Group = bucket.Key, Items = bucket});
+			//first get tasks(leaf nodes) only.
+			var allTasksForDateGroupedByParents = (from t in _context.ChecklistElements.OfType<Task>()
+			                                       where ((t.ResolveTime == null) || 
+			                                              ((dateLowerLimit >= t.BeginTime && dateLowerLimit <= (DateTime)t.ResolveTime)))
+			                                       group t by t.ParentGroup into bucket
+			                                       select new {Group = bucket.Key, Items = bucket});
 
-				//group id to its members
-				Dictionary<int, List<ChecklistElementBLL>> groupToMembersMap = new Dictionary<int, List<ChecklistElementBLL>>();
-				Queue<Group> unconvertedGroupsQ = new Queue<Group>();
-					
-				//So far we have tasks only. Put each set of tasks in appropriate ChklistBLL collections.
-				//And populate queue to begin work on organizing 'Group' objects..
-				foreach (var bucket in allTasksForDateGroupedByParents)
-				{					
-					int key = (bucket.Group == null)?(-1):(bucket.Group.ItemID);
-					
-					List<ChecklistElementBLL> coll = new List<ChecklistElementBLL>();
-					
-					//add PARENT GROUP of current task set
-					if (bucket.Group != null)
-						unconvertedGroupsQ.Enqueue(bucket.Group);
-					
-					foreach (Task dalTask in bucket.Items)
-						coll.Add(BLLUtility.CreateTaskBll(dalTask));
-					
-					
-					groupToMembersMap[key] = coll;
-				}
+			//group id to its members
+			Dictionary<int, List<ChecklistElementBLL>> groupToMembersMap = new Dictionary<int, List<ChecklistElementBLL>>();
+			Queue<Group> unconvertedGroupsQ = new Queue<Group>();
 				
-				//Now process Groups only, ie. the remaining non-leaf nodes
-				while (unconvertedGroupsQ.Count > 0)
+			//So far we have tasks only. Put each set of tasks in appropriate ChklistBLL collections.
+			//And populate queue to begin work on organizing 'Group' objects..
+			foreach (var bucket in allTasksForDateGroupedByParents)
+			{					
+				int key = (bucket.Group == null)?(-1):(bucket.Group.ItemID);
+				
+				List<ChecklistElementBLL> coll = new List<ChecklistElementBLL>();
+				
+				//add PARENT GROUP of current task set
+				if (bucket.Group != null)
+					unconvertedGroupsQ.Enqueue(bucket.Group);
+				
+				foreach (Task dalTask in bucket.Items)
+					coll.Add(BLLUtility.CreateTaskBll(dalTask));
+				
+				
+				groupToMembersMap[key] = coll;
+			}
+			
+			//Now process Groups only, ie. the remaining non-leaf nodes
+			while (unconvertedGroupsQ.Count > 0)
+			{
+				Group dalGroup = unconvertedGroupsQ.Dequeue();
+				
+				GroupBLL bllGroup = BLLUtility.CreateGroupBll(dalGroup);
+				bllGroup.Items = groupToMembersMap[dalGroup.ItemID];
+				
+				//check if parent group has mapping in dict. If not, create.
+				//Either case, add to dict[parent].
+				if (dalGroup.ParentGroup != null)
 				{
-					Group dalGroup = unconvertedGroupsQ.Dequeue();
-					
-					GroupBLL bllGroup = BLLUtility.CreateGroupBll(dalGroup);
-					bllGroup.Items = groupToMembersMap[dalGroup.ItemID];
-					
-					//check if parent group has mapping in dict. If not, create.
-					//Either case, add to dict[parent].
-					if (dalGroup.ParentGroup != null)
-					{
-						List<ChecklistElementBLL> memberItems;
-						if (groupToMembersMap.TryGetValue((int)dalGroup.ParentGroupID, out memberItems))
-							memberItems.Add(bllGroup);
-						else
-						{
-							memberItems = new List<ChecklistElementBLL>();
-							memberItems.Add(bllGroup);
-							groupToMembersMap[(int)dalGroup.ParentGroupID] = memberItems;
-							
-							unconvertedGroupsQ.Enqueue(dalGroup.ParentGroup);
-						}
-					}
+					List<ChecklistElementBLL> memberItems;
+					if (groupToMembersMap.TryGetValue((int)dalGroup.ParentGroupID, out memberItems))
+						memberItems.Add(bllGroup);
 					else
 					{
-						if (!groupToMembersMap.ContainsKey(-1))
-							groupToMembersMap[-1] = new List<ChecklistElementBLL>();
-							
-						groupToMembersMap[-1].Add(bllGroup);
+						memberItems = new List<ChecklistElementBLL>();
+						memberItems.Add(bllGroup);
+						groupToMembersMap[(int)dalGroup.ParentGroupID] = memberItems;
+						
+						unconvertedGroupsQ.Enqueue(dalGroup.ParentGroup);
 					}
 				}
-				
-				//FIXME: MASSIVE Bottleneck here. Soln: cache all posinfo in memory.
-//				SortTreeByPositionInfo(context, groupToMembersMap);
-				
-				return groupToMembersMap[-1];
-				#endregion
-
-				#endregion
-				
+				else
+				{
+					if (!groupToMembersMap.ContainsKey(-1))
+						groupToMembersMap[-1] = new List<ChecklistElementBLL>();
+						
+					groupToMembersMap[-1].Add(bllGroup);
+				}
 			}
+			
+			//FIXME: MASSIVE Bottleneck here. Soln: cache all posinfo in memory.
+//				SortTreeByPositionInfo(groupToMembersMap);
+			
+			return groupToMembersMap[-1];
+			#endregion
+
+			#endregion
+			
 			
 		}
 		
 		private void PurgeOldPositionInfo()
 		{
 			
-			using (ProcrastinHaterEntities context = new ProcrastinHaterEntities())
-			{
-				
-				HardSettings settings = context.HardSettingsSet.Single(hs => hs.Check == true);
-	            DateTime lastPurgeTime = settings.LastPosInfoPurgeTime;
-	
-	            //purge items when a day or more has elapsed since the last purge.
-	            if ((DateTime.Now - lastPurgeTime).Days > 0)
-	            {
-                	int daysOfPositionHistory = settings.DaysOfHistoryToShow;
-	            	DateTime dateLowerLimit = DateTime.Now.AddDays(-daysOfPositionHistory);
-	            	
-	                var itemsToStripPosInfoFrom = (from ce in context.ChecklistElements
-	                                               where ((ce.PositionInformation != null) && ((DateTime)ce.ResolveTime < dateLowerLimit))
-	                                               select ce);
-	
-	                foreach (var item in itemsToStripPosInfoFrom)
-	                	BLLUtility.DeletePositionInfo(context, item);
-	                
-	                settings.LastPosInfoPurgeTime = DateTime.Now;
-	                
-	                //Commit purge.
-	                context.SaveChanges();
+			HardSettings settings = _context.HardSettingsSet.Single(hs => hs.Check == true);
+            DateTime lastPurgeTime = settings.LastPosInfoPurgeTime;
 
-            	}
-	            
+            //purge items when a day or more has elapsed since the last purge.
+            if ((DateTime.Now - lastPurgeTime).Days > 0)
+            {
+            	int daysOfPositionHistory = settings.DaysOfHistoryToShow;
+            	DateTime dateLowerLimit = DateTime.Now.AddDays(-daysOfPositionHistory);
+            	
+                var itemsToStripPosInfoFrom = (from ce in _context.ChecklistElements
+                                               where ((ce.PositionInformation != null) && ((DateTime)ce.ResolveTime < dateLowerLimit))
+                                               select ce);
+
+                foreach (var item in itemsToStripPosInfoFrom)
+                	BLLUtility.DeletePositionInfo(_context, item);
+                
+                settings.LastPosInfoPurgeTime = DateTime.Now;
+                
+                //Commit purge.
+                _context.SaveChanges();
+
 			}
 		}
 		
-		private void SortTreeByPositionInfo(ProcrastinHaterEntities context, Dictionary<int, List<ChecklistElementBLL>> tree)
+		private void SortTreeByPositionInfo(Dictionary<int, List<ChecklistElementBLL>> tree)
 		{
-			ChecklistElementPositionPrioritizedComparer comparer = new ChecklistElementOrganizer.ChecklistElementPositionPrioritizedComparer(context);
+			ChecklistElementPositionPrioritizedComparer comparer = new ChecklistElementOrganizer.ChecklistElementPositionPrioritizedComparer(_context);
 			
 			foreach(List<ChecklistElementBLL> groupMemberSet in tree.Values)
 			{
@@ -267,5 +260,8 @@ namespace ProcrastinHater.BLL
 			private ProcrastinHaterEntities _context;
 			
 		}
+		
+		
+		private ProcrastinHaterEntities _context;
 	}
 }

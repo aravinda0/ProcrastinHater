@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BLLUtility.cs" />
+    <Compile Include="Bridge.cs" />
     <Compile Include="ChecklistElementOrganizer.cs" />
     <Compile Include="GroupsManager.cs" />
     <Compile Include="HardSettingsManager.cs" />

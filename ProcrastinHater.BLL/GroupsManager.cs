@@ -15,8 +15,9 @@ namespace ProcrastinHater.BLL
 	/// </summary>
 	public class GroupsManager : IGroupsManager
 	{
-		public GroupsManager()
+		internal GroupsManager(ProcrastinHaterEntities context)
 		{
+			_context = context;
 		}
 		
 		
@@ -34,23 +35,20 @@ namespace ProcrastinHater.BLL
 				GroupInfoToGroup(gInfo, groupToAdd);
 				groupToAdd.ParentGroupID = parentGroupId;
 				
-				using (ProcrastinHaterEntities context = new ProcrastinHaterEntities())
+				if (ValidateGroup(_context, groupToAdd, out errors))
 				{
-					if (ValidateGroup(context, groupToAdd, out errors))
+					int newGroupId = HardSettingsManager.GetAndAdvanceNextChecklistElementKey(_context);
+					
+					if (newGroupId != -1)
 					{
-						int newGroupId = HardSettingsManager.GetAndAdvanceNextChecklistElementKey(context);
+						groupToAdd.ItemID = newGroupId;
+						BLLUtility.AddPositionInfo(_context, groupToAdd, parentGroupId);
 						
-						if (newGroupId != -1)
-						{
-							groupToAdd.ItemID = newGroupId;
-							BLLUtility.AddPositionInfo(context, groupToAdd, parentGroupId);
-							
-							context.ChecklistElements.AddObject(groupToAdd);
-							context.SaveChanges();
-						}
-						else
-							errors = "The next key information could not be retrieved from the database.";
+						_context.ChecklistElements.AddObject(groupToAdd);
+						_context.SaveChanges();
 					}
+					else
+						errors = "The next key information could not be retrieved from the database.";
 				}
 			}
 			
@@ -59,12 +57,12 @@ namespace ProcrastinHater.BLL
 		
 		
 		#region Group validation
-		private bool ValidateGroup(ProcrastinHaterEntities context, Group group, out string errors)
+		private bool ValidateGroup(ProcrastinHaterEntities _context, Group group, out string errors)
 		{
 			errors = "";
 			
 			string ceValiErrs = null;
-			if (!BLLUtility.ValidateChecklistElement(context, group, out ceValiErrs))
+			if (!BLLUtility.ValidateChecklistElement(_context, group, out ceValiErrs))
 				errors += ceValiErrs;
 			
 			//space reserved for possible future stuff.
@@ -84,5 +82,7 @@ namespace ProcrastinHater.BLL
 			
 			g.IsExpanded = gi.IsExpanded;
 		}
+		
+		private ProcrastinHaterEntities _context;
 	}
 }

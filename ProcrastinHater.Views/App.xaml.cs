@@ -18,12 +18,10 @@ namespace ProcrastinHater.Views
 		{
 			base.OnStartup(e);
 			
-			TasksManager tm = new TasksManager();
-			GroupsManager gm = new GroupsManager();
-			ChecklistElementOrganizer cm = new ChecklistElementOrganizer();
+			Bridge bridge = new Bridge();
 			
 			
-			MainWindowVM mainWinVm = new MainWindowVM(tm, gm, cm);
+			MainWindowVM mainWinVm = new MainWindowVM(bridge.TasksMgr, bridge.GroupsMgr, bridge.CEMgr);
 			MainView window = new MainView();
 			
 			mainWinVm.RequestClose += delegate { window.Close(); };

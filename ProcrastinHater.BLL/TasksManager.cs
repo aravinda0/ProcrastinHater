@@ -14,9 +14,9 @@ namespace ProcrastinHater.BLL
 	/// </summary>
 	public class TasksManager : ITasksManager
 	{
-		public TasksManager()
+		internal TasksManager(ProcrastinHaterEntities context)
 		{
-			
+			_context = context;
 		}
 		
 		
@@ -26,14 +26,11 @@ namespace ProcrastinHater.BLL
 		{
 			TaskBLL bllTask = null;
 			
-			using (ProcrastinHaterEntities context = new ProcrastinHaterEntities())
-			{
-				Task dalTask = (from t in context.ChecklistElements.OfType<Task>().Include("TimedTaskSettings")
-				             where t.ItemID == id select t).SingleOrDefault();
-				
-				if (dalTask != null)
-					BLLUtility.CreateTaskBll(dalTask);
-			}
+			Task dalTask = (from t in _context.ChecklistElements.OfType<Task>().Include("TimedTaskSettings")
+			             where t.ItemID == id select t).SingleOrDefault();
+			
+			if (dalTask != null)
+				BLLUtility.CreateTaskBll(dalTask);
 			
 			return bllTask;
 			
@@ -61,56 +58,53 @@ namespace ProcrastinHater.BLL
 			TaskInfoToTask(taskInfo, taskToAdd);
 			taskToAdd.ParentGroupID = parentGroupId;
 			
-			using (ProcrastinHaterEntities context = new ProcrastinHaterEntities())
+			bool taskIsValid = true;
+			bool timingInfoIsValid = true;
+			
+			string taskValidationErrs = "";
+			taskIsValid = ValidateTask(_context, taskToAdd, out taskValidationErrs);
+			
+			
+			TimedTaskSettings newTTS = null;
+			
+			string ttsValidationErrs = "";
+			if (timingInfo != null)
 			{
-				bool taskIsValid = true;
-				bool timingInfoIsValid = true;
+				newTTS = new TimedTaskSettings();
+				TTSInfoToTTS(timingInfo, newTTS);
 				
-				string taskValidationErrs = "";
-				taskIsValid = ValidateTask(context, taskToAdd, out taskValidationErrs);
+				timingInfoIsValid = ValidateTimedTaskSettings(_context, newTTS, out ttsValidationErrs);
+			}
+			
+			
+			if (!taskIsValid || !timingInfoIsValid)
+				errors += taskValidationErrs + ttsValidationErrs;
+			else
+			{
+				
+				int newTaskKey = HardSettingsManager.GetAndAdvanceNextChecklistElementKey(_context);
 				
 				
-				TimedTaskSettings newTTS = null;
-				
-				string ttsValidationErrs = "";
-				if (timingInfo != null)
+				if (newTaskKey != -1)
 				{
-					newTTS = new TimedTaskSettings();
-					TTSInfoToTTS(timingInfo, newTTS);
-					
-					timingInfoIsValid = ValidateTimedTaskSettings(context, newTTS, out ttsValidationErrs);
-				}
-				
-				
-				if (!taskIsValid || !timingInfoIsValid)
-					errors += taskValidationErrs + ttsValidationErrs;
-				else
-				{
-					
-					int newTaskKey = HardSettingsManager.GetAndAdvanceNextChecklistElementKey(context);
-					
-					
-					if (newTaskKey != -1)
+					if (newTTS != null)
 					{
-						if (newTTS != null)
-						{
-							//sigh.. validate this too?
-							newTTS.TimedTaskSettingsID = HardSettingsManager.GetAndAdvanceNextTimedTaskSettingsKey(context);
-							
-							taskToAdd.TimedTaskSettings = newTTS;
-						}
+						//sigh.. validate this too?
+						newTTS.TimedTaskSettingsID = HardSettingsManager.GetAndAdvanceNextTimedTaskSettingsKey(_context);
 						
-						taskToAdd.ItemID = newTaskKey;
-						BLLUtility.AddPositionInfo(context, taskToAdd, parentGroupId);
-						
-						context.ChecklistElements.AddObject(taskToAdd);
-						context.SaveChanges();
-						
-						return true;
+						taskToAdd.TimedTaskSettings = newTTS;
 					}
-					else
-						errors += "The next-key information could not be retreived from the database.\n";
+					
+					taskToAdd.ItemID = newTaskKey;
+					BLLUtility.AddPositionInfo(_context, taskToAdd, parentGroupId);
+					
+					_context.ChecklistElements.AddObject(taskToAdd);
+					_context.SaveChanges();
+					
+					return true;
 				}
+				else
+					errors += "The next-key information could not be retreived from the database.\n";
 			}
 			
 			
@@ -128,7 +122,7 @@ namespace ProcrastinHater.BLL
 		#region private helpers
 		
 		#region Validation
-		private bool ValidateTask(ProcrastinHaterEntities context, Task task,
+		private bool ValidateTask(ProcrastinHaterEntities _context, Task task,
 		                          out string errors)
 		{
 			errors = "";
@@ -136,10 +130,10 @@ namespace ProcrastinHater.BLL
 			//using += so as to get all problems with provided Task object in one go.
 			
 			string checkListValiErrs;
-			if (!BLLUtility.ValidateChecklistElement(context, task, out checkListValiErrs))
+			if (!BLLUtility.ValidateChecklistElement(_context, task, out checkListValiErrs))
 				errors += checkListValiErrs + "\n";
 			
-			string statusIdErr = ValidateStatusId(context, task.StatusID);
+			string statusIdErr = ValidateStatusId(_context, task.StatusID);
 			if (statusIdErr != null)
 				errors += statusIdErr + "\n";
 			
@@ -154,12 +148,12 @@ namespace ProcrastinHater.BLL
 			
 		}
 		
-		private string ValidateStatusId(ProcrastinHaterEntities context,
+		private string ValidateStatusId(ProcrastinHaterEntities _context,
 		                                int statusId)
 		{
             string err = null;
             
-            if (!(context.Status.Any((st) => st.StatusID == statusId)))
+            if (!(_context.Status.Any((st) => st.StatusID == statusId)))
             	err = "StatusId: " + statusId.ToString() + " is not a valid status.\n";
             
             return err;
@@ -179,7 +173,7 @@ namespace ProcrastinHater.BLL
 		
 		
 		
-		private bool ValidateTimedTaskSettings(ProcrastinHaterEntities context,
+		private bool ValidateTimedTaskSettings(ProcrastinHaterEntities _context,
 		                                       TimedTaskSettings tts, out string errors)
 		{
 			errors = "";
@@ -188,7 +182,7 @@ namespace ProcrastinHater.BLL
 			if (dueTimeErr != null)
 				errors += dueTimeErr + "\n";
 			
-			string timeoutActionErr = ValidateTimeoutAction(context, tts.TimeoutActionID);
+			string timeoutActionErr = ValidateTimeoutAction(_context, tts.TimeoutActionID);
 			if (timeoutActionErr != null)
 				errors += timeoutActionErr + "\n";
 			
@@ -210,12 +204,12 @@ namespace ProcrastinHater.BLL
 			return err;
 		}
 		
-		private string ValidateTimeoutAction(ProcrastinHaterEntities context,
+		private string ValidateTimeoutAction(ProcrastinHaterEntities _context,
 		                                     int timeoutActionId)
 		{
 			string err = null;
 			
-			if (!(context.TimeoutActions.Any((o) => o.TimeoutActionID == timeoutActionId)))
+			if (!(_context.TimeoutActions.Any((o) => o.TimeoutActionID == timeoutActionId)))
 			    err = "An invalid timeout action has been specified.";
 			
 			return err;
@@ -241,5 +235,8 @@ namespace ProcrastinHater.BLL
         
 
 		#endregion private helpers
+		
+		
+		private ProcrastinHaterEntities _context;
 	}
 }
