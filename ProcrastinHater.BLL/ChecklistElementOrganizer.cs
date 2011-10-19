@@ -1,8 +1,8 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-
 using ProcrastinHater.BusinessInterfaces;
 using ProcrastinHater.BusinessInterfaces.BLLClasses;
 using ProcrastinHater.POCOEntities;
@@ -142,8 +142,7 @@ namespace ProcrastinHater.BLL
 				}
 			}
 			
-			//FIXME: MASSIVE Bottleneck here. Soln: cache all posinfo in memory.
-//				SortTreeByPositionInfo(groupToMembersMap);
+			SortTreeByPositionInfo(groupToMembersMap);
 			
 			return groupToMembersMap[-1];
 			#endregion
@@ -202,15 +201,22 @@ namespace ProcrastinHater.BLL
 			public ChecklistElementPositionPrioritizedComparer(ProcrastinHaterEntities context)
 			{
 				_context = context;
+				
+				_cache = (from ce in _context.ChecklistElements
+				          where ce.PositionInformation != null
+				          select ce).ToList();
 			}
+			
+
+			List<ChecklistElement> _cache;
 			
 			public int Compare(ChecklistElementBLL x, ChecklistElementBLL y)
 			{
 				if (x == y)
 					return 0;
 
-				ChecklistElement ceX = _context.ChecklistElements.Where((ce) => ce.ItemID == x.ItemID).Single();
-				ChecklistElement ceY = _context.ChecklistElements.Where((ce) => ce.ItemID == y.ItemID).Single();
+				ChecklistElement ceX = _cache.Where((ce) => ce.ItemID == x.ItemID).Single();
+				ChecklistElement ceY = _cache.Where((ce) => ce.ItemID == y.ItemID).Single();
 
 				if (ceX.PositionInformation == null && ceY.PositionInformation == null)
 				{
