@@ -13,12 +13,12 @@ namespace ProcrastinHater.BLL
 		public Bridge()
 		{
 			_context = new ProcrastinHaterEntities();
-			CEMgr = new ChecklistElementOrganizer(_context);
+			CEOrganizer = new ChecklistElementOrganizer(_context);
 			GroupsMgr = new GroupsManager(_context);
 			TasksMgr = new TasksManager(_context);
 		}
 		
-		public ChecklistElementOrganizer CEMgr
+		public ChecklistElementOrganizer CEOrganizer
 		{
 			get;
 			private set;

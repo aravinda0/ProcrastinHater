@@ -21,7 +21,7 @@ namespace ProcrastinHater.Views
 			Bridge bridge = new Bridge();
 			
 			
-			MainWindowVM mainWinVm = new MainWindowVM(bridge.TasksMgr, bridge.GroupsMgr, bridge.CEMgr);
+			MainWindowVM mainWinVm = new MainWindowVM(bridge.TasksMgr, bridge.GroupsMgr, bridge.CEOrganizer);
 			MainView window = new MainView();
 			
 			mainWinVm.RequestClose += delegate { window.Close(); };
