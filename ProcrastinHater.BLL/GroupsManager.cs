@@ -35,7 +35,7 @@ namespace ProcrastinHater.BLL
 				GroupInfoToGroup(gInfo, groupToAdd);
 				groupToAdd.ParentGroupID = parentGroupId;
 				
-				if (ValidateGroup(_context, groupToAdd, out errors))
+				if (ValidateGroup(groupToAdd, out errors))
 				{
 					int newGroupId = HardSettingsManager.GetAndAdvanceNextChecklistElementKey(_context);
 					
@@ -55,9 +55,40 @@ namespace ProcrastinHater.BLL
 			return false;
 		}
 		
+		/// <summary>
+		/// This method is used to update details of existing 'Groups'. To change a 
+		/// Group's parent, ie. to move a Group from one containing Group to another,
+		/// use the methods in the ChecklistElementOrganizer.
+		/// Note: The BeginTime will also be updated, as specified in gInfo.
+		/// </summary>
+		public bool UpdateGroup(int id, GroupInfo gInfo, out string errors)
+		{
+			errors = "";
+			
+			Group groupToUpdate = _context.ChecklistElements.OfType<Group>()
+				.Where(g => g.ItemID == id).SingleOrDefault();
+			
+			if (groupToUpdate != null)
+			{
+				GroupInfoToGroup(gInfo, groupToUpdate);
+				
+				if (ValidateGroup(groupToUpdate, out errors))
+				{
+					_context.SaveChanges();
+					return true;
+				}
+				else
+					return false;
+			}
+			else
+			{
+				errors = "No Group with the specified ItemID exists.";
+				return false;
+			}
+		}
 		
 		#region Group validation
-		private bool ValidateGroup(ProcrastinHaterEntities _context, Group group, out string errors)
+		private bool ValidateGroup(Group group, out string errors)
 		{
 			errors = "";
 			
@@ -65,7 +96,7 @@ namespace ProcrastinHater.BLL
 			if (!BLLUtility.ValidateChecklistElement(_context, group, out ceValiErrs))
 				errors += ceValiErrs;
 			
-			//space reserved for possible future stuff.
+			//possible future stuff.
 			
 			if (string.IsNullOrWhiteSpace(errors))
 				return true;
