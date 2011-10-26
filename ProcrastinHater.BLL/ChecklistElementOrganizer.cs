@@ -69,7 +69,7 @@ namespace ProcrastinHater.BLL
 //				
 //				return (x > 0)?null:new List<ChecklistElementBLL>();
 			
-			#region old try
+			#region default approach
 
 			#region commenting helper
             int daysOfPositionHistory = _context.HardSettingsSet.Where(o => o.Check == true).Single().DaysOfHistoryToShow;
@@ -77,7 +77,6 @@ namespace ProcrastinHater.BLL
 			
 			DateTime dateLowerLimit = date.AddDays(-daysOfPositionHistory);
 			dateLowerLimit = new DateTime(dateLowerLimit.Year, dateLowerLimit.Month, dateLowerLimit.Day);
-			
 
 			//first get tasks(leaf nodes) only.
 			var allTasksForDateGroupedByParents = (from t in _context.ChecklistElements.OfType<Task>()
@@ -202,31 +201,40 @@ namespace ProcrastinHater.BLL
 			{
 				_context = context;
 				
-				_cache = (from ce in _context.ChecklistElements
+				_positionTrackedItemsCache = (from ce in _context.ChecklistElements
 				          where ce.PositionInformation != null
 				          select ce).ToList();
 			}
 			
 
-			List<ChecklistElement> _cache;
+			List<ChecklistElement> _positionTrackedItemsCache;
 			
 			public int Compare(ChecklistElementBLL x, ChecklistElementBLL y)
 			{
+//				Console.WriteLine("{0}\t{1}", x.ItemID, x.Title);
+//				Console.WriteLine("{0}\t{1}", y.ItemID, y.Title);
+//				Console.WriteLine("\n");
 				if (x == y)
 					return 0;
 
-				ChecklistElement ceX = _cache.Where((ce) => ce.ItemID == x.ItemID).Single();
-				ChecklistElement ceY = _cache.Where((ce) => ce.ItemID == y.ItemID).Single();
+				ChecklistElement ceX = _positionTrackedItemsCache.SingleOrDefault((ce) => ce.ItemID == x.ItemID);
+				ChecklistElement ceY = _positionTrackedItemsCache.SingleOrDefault((ce) => ce.ItemID == y.ItemID);
 
-				if (ceX.PositionInformation == null && ceY.PositionInformation == null)
+				
+				if (ceX == null && ceY == null)
 				{
-					return DateTime.Compare(ceX.BeginTime, ceY.BeginTime);
+					//They are both null => both are absent from _posTrackedItemsCache => their PositionInformation == null
+					
+					//FIXME: As is, in this situation, 
+					//compare btw Group & Task --> Group always wins. Instead, compare
+					//with the most recent Task in BLLGroup's current list of items
+					return DateTime.Compare(x.BeginTime, y.BeginTime);
 				}
-				else if (ceX.PositionInformation != null && ceY.PositionInformation == null)
+				else if (ceX != null && ceY == null)
 					return -1;
-				else if (ceX.PositionInformation == null && ceY.PositionInformation != null)
+				else if (ceX == null && ceY != null)
 					return 1;
-				else if (ceX.PositionInformation != null && ceY.PositionInformation != null)
+				else if (ceX != null && ceY != null)
 				{
 					//compare database stored position info
 					

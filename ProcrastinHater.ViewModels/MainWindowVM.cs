@@ -82,7 +82,7 @@ namespace ProcrastinHater.ViewModels
 				if (_nextDayCmd == null)
 					_nextDayCmd = new RelayCommand((o) =>
 					                               {
-					                               	_currentDate.AddDays(1);
+					                               	_currentDate = _currentDate.AddDays(1);
 					                               	this.GetVmTreeForDate(_currentDate);
 					                               });
 				
@@ -97,7 +97,7 @@ namespace ProcrastinHater.ViewModels
 				if (_previousDayCmd == null)
 					_previousDayCmd = new RelayCommand((o) =>
 					                               {
-					                               	_currentDate.AddDays(-1);
+					                               	_currentDate = _currentDate.AddDays(-1);
 					                               	this.GetVmTreeForDate(_currentDate);
 					                               });
 				
