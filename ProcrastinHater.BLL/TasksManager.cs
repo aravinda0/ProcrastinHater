@@ -30,7 +30,7 @@ namespace ProcrastinHater.BLL
 			             where t.ItemID == id select t).SingleOrDefault();
 			
 			if (dalTask != null)
-				BLLUtility.CreateTaskBll(dalTask);
+				bllTask = BLLUtility.CreateTaskBll(dalTask);
 			
 			return bllTask;
 			
