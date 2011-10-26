@@ -59,7 +59,6 @@ namespace ProcrastinHater.BLL
 		/// This method is used to update details of existing 'Groups'. To change a 
 		/// Group's parent, ie. to move a Group from one containing Group to another,
 		/// use the methods in the ChecklistElementOrganizer.
-		/// Note: The BeginTime will also be updated, as specified in gInfo.
 		/// </summary>
 		public bool UpdateGroup(int id, GroupInfo gInfo, out string errors)
 		{

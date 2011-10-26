@@ -12,5 +12,6 @@ namespace ProcrastinHater.BusinessInterfaces
 	public interface IGroupsManager
 	{
 		bool AddNewGroup(GroupInfo gInfo, int? parentGroupId, out string errors);
+		bool UpdateGroup(int id, GroupInfo gInfo, out string errors);
 	}
 }

@@ -15,7 +15,7 @@ namespace ProcrastinHater.BusinessInterfaces
 		bool AddNewTask(TaskInfo taskInfo, int? parentGroupId, out string errors);
 		bool AddNewTask(TaskInfo taskInfo, int? parentGroupId, 
 		                TimedTaskSettingsInfo timingInfo, out string errors);
-		
+		bool UpdateTaskDescriptors(int id, TaskInfo taskInfo, out string errors);
 		
 	}
 }

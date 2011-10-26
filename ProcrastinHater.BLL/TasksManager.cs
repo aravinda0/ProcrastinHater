@@ -17,8 +17,20 @@ namespace ProcrastinHater.BLL
 		internal TasksManager(ProcrastinHaterEntities context)
 		{
 			_context = context;
+			Cake(context);
 		}
 		
+		static bool ok = false;
+		
+		static void Cake(ProcrastinHaterEntities cxt)
+		{
+			if (ok == false)
+			{
+				ok = true;
+				Console.WriteLine(cxt.ChecklistElements.Single(ce => ce.ItemID == 115).ResolveTime);
+
+			}
+		}
 		
 		#region CRUD
 		
@@ -62,7 +74,7 @@ namespace ProcrastinHater.BLL
 			bool timingInfoIsValid = true;
 			
 			string taskValidationErrs = "";
-			taskIsValid = ValidateTask(_context, taskToAdd, out taskValidationErrs);
+			taskIsValid = ValidateTask(taskToAdd, out taskValidationErrs);
 			
 			
 			TimedTaskSettings newTTS = null;
@@ -73,7 +85,7 @@ namespace ProcrastinHater.BLL
 				newTTS = new TimedTaskSettings();
 				TTSInfoToTTS(timingInfo, newTTS);
 				
-				timingInfoIsValid = ValidateTimedTaskSettings(_context, newTTS, out ttsValidationErrs);
+				timingInfoIsValid = ValidateTimedTaskSettings(newTTS, out ttsValidationErrs);
 			}
 			
 			
@@ -113,7 +125,114 @@ namespace ProcrastinHater.BLL
 		}
 		
 		#endregion Add
+		
+		#region Update
 
+		/// <summary>
+		/// Update task's information. For changing task's 'Status', use ChangeStatus().
+		/// </summary>
+		public bool UpdateTaskDescriptors(int id, TaskInfo taskInfo, out string errors)
+		{
+			/*
+				If task did not have 'PositionInformation' and new 'BeginTime'
+				is within position-tracked days, add a PosInfo to it. 
+				Pos = end of parent group (take care of top lvl task, parent == null).
+				
+				Besides that, just update properties.
+			*/
+			//TODO: Ponder about the need to allow changes on ResolveTime (via another method...  not this one)
+			
+			errors = "";
+			
+			Task taskToUpdate = _context.ChecklistElements.OfType<Task>()
+				.SingleOrDefault(t => t.ItemID == id);
+			
+			if (taskToUpdate != null)
+			{
+				HardSettings settings = _context.HardSettingsSet.SingleOrDefault(hs => hs.Check == true);
+				
+				if (settings != null)
+				{
+					TaskInfoToTask(taskInfo, taskToUpdate);
+					
+					if (ValidateTask(taskToUpdate, out errors))
+					{
+						CheckIfNewBeginTimeAffectsPosInfo(taskToUpdate, settings);
+						
+						_context.SaveChanges();
+						return true;
+					}
+					else
+						return false;
+					
+				}
+				else
+				{
+					errors = "The database is corrupt. Settings info could not be retreived.";
+					return false;
+				}
+			}
+			else
+			{
+				errors = "No Task with the specified ItemID exists.";
+				return false;				
+			}
+			
+		}
+		
+		private void CheckIfNewBeginTimeAffectsPosInfo(Task taskToUpdate, HardSettings settings)
+		{
+			int numPosTrackedDays = settings.DaysOfHistoryToShow;
+			DateTime posTrackingStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month,
+			                                             DateTime.Now.Day - numPosTrackedDays);
+		
+			if (taskToUpdate.PositionInformation == null)
+			{
+				//BeginTime changed from non-pos-tracking timestamp to pos-tracking timestamp
+				
+				if (taskToUpdate.BeginTime >= posTrackingStartDate && taskToUpdate.BeginTime <= DateTime.Now)
+				{
+					//need to add PositionInfo. Add task to end of Group.
+					PositionInformation pi = new PositionInformation();
+					
+					ChecklistElement lastItemOfGroup = taskToUpdate.ParentGroup.ChecklistElements
+						.SingleOrDefault(ce => ce.PositionInformation != null && ce.PositionInformation.NextItem == null);
+					
+					if (lastItemOfGroup != null)
+					{
+						lastItemOfGroup.PositionInformation.NextItem = taskToUpdate;
+						pi.PreviousItem = lastItemOfGroup; 
+					}
+					//else the group is currently empty
+					
+					taskToUpdate.PositionInformation = pi;
+				}
+			}
+			else
+			{
+				//BeginTime changed from pos-tracking timestamp to non-pos-tracking timestamp
+				//just remove PosInfo.
+				
+				if (taskToUpdate.BeginTime < posTrackingStartDate || taskToUpdate.BeginTime > DateTime.Now)
+				{
+					RemovePosInfoFromLinkedList(taskToUpdate);
+				}
+			}
+		}
+		
+		private void RemovePosInfoFromLinkedList(ChecklistElement ce)
+		{
+			ChecklistElement prevItem = ce.PositionInformation.PreviousItem;
+			ChecklistElement nextItem = ce.PositionInformation.NextItem;
+			if (prevItem != null)
+				prevItem.PositionInformation.NextItem = nextItem;
+			if (nextItem != null)
+				nextItem.PositionInformation.PreviousItem = prevItem;
+				
+			_context.PositionInformationSet.DeleteObject(ce.PositionInformation);			
+		}
+
+		#endregion Update
 		
 		#endregion CRUD
 		
@@ -122,8 +241,7 @@ namespace ProcrastinHater.BLL
 		#region private helpers
 		
 		#region Validation
-		private bool ValidateTask(ProcrastinHaterEntities _context, Task task,
-		                          out string errors)
+		private bool ValidateTask(Task task, out string errors)
 		{
 			errors = "";
 			
@@ -133,7 +251,7 @@ namespace ProcrastinHater.BLL
 			if (!BLLUtility.ValidateChecklistElement(_context, task, out checkListValiErrs))
 				errors += checkListValiErrs + "\n";
 			
-			string statusIdErr = ValidateStatusId(_context, task.StatusID);
+			string statusIdErr = ValidateStatusId(task.StatusID);
 			if (statusIdErr != null)
 				errors += statusIdErr + "\n";
 			
@@ -148,8 +266,7 @@ namespace ProcrastinHater.BLL
 			
 		}
 		
-		private string ValidateStatusId(ProcrastinHaterEntities _context,
-		                                int statusId)
+		private string ValidateStatusId(int statusId)
 		{
             string err = null;
             
@@ -173,8 +290,7 @@ namespace ProcrastinHater.BLL
 		
 		
 		
-		private bool ValidateTimedTaskSettings(ProcrastinHaterEntities _context,
-		                                       TimedTaskSettings tts, out string errors)
+		private bool ValidateTimedTaskSettings(TimedTaskSettings tts, out string errors)
 		{
 			errors = "";
 			
@@ -182,7 +298,7 @@ namespace ProcrastinHater.BLL
 			if (dueTimeErr != null)
 				errors += dueTimeErr + "\n";
 			
-			string timeoutActionErr = ValidateTimeoutAction(_context, tts.TimeoutActionID);
+			string timeoutActionErr = ValidateTimeoutAction(tts.TimeoutActionID);
 			if (timeoutActionErr != null)
 				errors += timeoutActionErr + "\n";
 			
@@ -204,8 +320,7 @@ namespace ProcrastinHater.BLL
 			return err;
 		}
 		
-		private string ValidateTimeoutAction(ProcrastinHaterEntities _context,
-		                                     int timeoutActionId)
+		private string ValidateTimeoutAction(int timeoutActionId)
 		{
 			string err = null;
 			
