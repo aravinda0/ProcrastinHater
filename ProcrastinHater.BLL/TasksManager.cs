@@ -17,20 +17,8 @@ namespace ProcrastinHater.BLL
 		internal TasksManager(ProcrastinHaterEntities context)
 		{
 			_context = context;
-			Cake(context);
 		}
 		
-		static bool ok = false;
-		
-		static void Cake(ProcrastinHaterEntities cxt)
-		{
-			if (ok == false)
-			{
-				ok = true;
-				Console.WriteLine(cxt.ChecklistElements.Single(ce => ce.ItemID == 115).ResolveTime);
-
-			}
-		}
 		
 		#region CRUD
 		
