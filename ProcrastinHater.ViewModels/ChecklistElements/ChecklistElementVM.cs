@@ -168,8 +168,6 @@ namespace ProcrastinHater.ViewModels.ChecklistElements
 		DateTime? _resolveTime;
 		GroupVM  _parentGroup;
 		
-		ChecklistElementVM _parentContainer;
-		
 		#endregion private fields
 		
 	}

@@ -74,8 +74,8 @@ namespace ProcrastinHater.BLL
         	}
         	
         	return  new TaskBLL(dalTask.ItemID, dalTask.ParentGroupID, 
-        	                          new TaskInfo(dalTask.Title, dalTask.BackgroundColor, dalTask.FontColor, dalTask.FontName, dalTask.FontSize, dalTask.BeginTime, dalTask.Details, (TaskStatuses)dalTask.StatusID),
-        	                          dalTask.ResolveTime, ttsi);
+        	                          new TaskInfo(dalTask.Title, dalTask.BackgroundColor, dalTask.FontColor, dalTask.FontName, dalTask.FontSize, dalTask.BeginTime, dalTask.Details),
+        	                          (TaskStatuses)dalTask.StatusID, dalTask.ResolveTime, ttsi);
         }
         
         public static GroupBLL CreateGroupBll(Group dalGroup)

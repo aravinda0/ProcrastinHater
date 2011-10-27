@@ -18,10 +18,9 @@ namespace ProcrastinHater.ViewModels.Utility
 		public static TaskVM TaskBllToTaskVm(TaskBLL bllTask)
 		{
 			TaskInfo ti = new TaskInfo(bllTask.Title, bllTask.BackgroundColor, bllTask.FontColor,
-			                           bllTask.FontName, bllTask.FontSize, bllTask.BeginTime, bllTask.Details,
-			                           bllTask.Status);
+			                           bllTask.FontName, bllTask.FontSize, bllTask.BeginTime, bllTask.Details);
 			
-			return new TaskVM(bllTask.ItemID, ti, bllTask.ResolveTime);
+			return new TaskVM(bllTask.ItemID, ti,  bllTask.Status, bllTask.ResolveTime);
 		}
 		
 		public static GroupVM GroupBllToGroupVm(GroupBLL bllGroup)

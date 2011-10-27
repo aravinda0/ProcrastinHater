@@ -11,11 +11,11 @@ namespace ProcrastinHater.BusinessInterfaces.BLLClasses
 	{
 
 		
-		public TaskBLL(int id, int? parentGroupId, TaskInfo tInfo, DateTime? resolveTime,
-		              TimedTaskSettingsInfo timingInfo)
+		public TaskBLL(int id, int? parentGroupId, TaskInfo tInfo, TaskStatuses status,
+		               DateTime? resolveTime, TimedTaskSettingsInfo timingInfo)
 			:base(id, parentGroupId, tInfo, resolveTime)
 		{
-			Status = tInfo.Status;
+			Status = status;
 			Details = tInfo.Details;
 			
 			if (timingInfo != null)

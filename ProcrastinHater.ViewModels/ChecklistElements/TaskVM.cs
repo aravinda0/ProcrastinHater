@@ -14,11 +14,11 @@ namespace ProcrastinHater.ViewModels.ChecklistElements
 			Status = TaskStatuses.PENDING;
 		}
 		
-		public TaskVM(int id, TaskInfo taskInfo, DateTime? resolveTime, GroupVM parentGroup = null)
+		public TaskVM(int id, TaskInfo taskInfo, TaskStatuses status, DateTime? resolveTime, GroupVM parentGroup = null)
 			:base(id, taskInfo, resolveTime, parentGroup)
 		{
 			Details = taskInfo.Details;
-			Status = taskInfo.Status;
+			Status = status;
 		}
 		
 		#region Mapped Task properties

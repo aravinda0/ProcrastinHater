@@ -56,6 +56,7 @@ namespace ProcrastinHater.BLL
 			
 			Task taskToAdd = new Task();
 			TaskInfoToTask(taskInfo, taskToAdd);
+        	taskToAdd.StatusID = 100;
 			taskToAdd.ParentGroupID = parentGroupId;
 			
 			bool taskIsValid = true;
@@ -325,7 +326,6 @@ namespace ProcrastinHater.BLL
         	BLLUtility.ChecklistElementInfoToChecklistElement(ti, t);
         	
         	t.Details = ti.Details;
-        	t.StatusID = (int)ti.Status;
         }
         
         private void TTSInfoToTTS(TimedTaskSettingsInfo ttsi, TimedTaskSettings tts)
