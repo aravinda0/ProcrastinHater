@@ -77,6 +77,36 @@ namespace ProcrastinHater.POCOEntities
             get { return _hardSettingsSet  ?? (_hardSettingsSet = CreateObjectSet<HardSettings>("HardSettingsSet")); }
         }
         private ObjectSet<HardSettings> _hardSettingsSet;
+    
+        public ObjectSet<CustomScheduleSpecifier> CustomScheduleSpecifiers
+        {
+            get { return _customScheduleSpecifiers  ?? (_customScheduleSpecifiers = CreateObjectSet<CustomScheduleSpecifier>("CustomScheduleSpecifiers")); }
+        }
+        private ObjectSet<CustomScheduleSpecifier> _customScheduleSpecifiers;
+    
+        public ObjectSet<DayofMonthSpecifier> DayofMonthSpecifiers
+        {
+            get { return _dayofMonthSpecifiers  ?? (_dayofMonthSpecifiers = CreateObjectSet<DayofMonthSpecifier>("DayofMonthSpecifiers")); }
+        }
+        private ObjectSet<DayofMonthSpecifier> _dayofMonthSpecifiers;
+    
+        public ObjectSet<DayOfYearSpecifier> DayOfYearSpecifiers
+        {
+            get { return _dayOfYearSpecifiers  ?? (_dayOfYearSpecifiers = CreateObjectSet<DayOfYearSpecifier>("DayOfYearSpecifiers")); }
+        }
+        private ObjectSet<DayOfYearSpecifier> _dayOfYearSpecifiers;
+    
+        public ObjectSet<MonthlyRelativeSpecifier> MonthlyRelativeSpecifiers
+        {
+            get { return _monthlyRelativeSpecifiers  ?? (_monthlyRelativeSpecifiers = CreateObjectSet<MonthlyRelativeSpecifier>("MonthlyRelativeSpecifiers")); }
+        }
+        private ObjectSet<MonthlyRelativeSpecifier> _monthlyRelativeSpecifiers;
+    
+        public ObjectSet<SchedulingInformation> SchedulingInformationSet
+        {
+            get { return _schedulingInformationSet  ?? (_schedulingInformationSet = CreateObjectSet<SchedulingInformation>("SchedulingInformationSet")); }
+        }
+        private ObjectSet<SchedulingInformation> _schedulingInformationSet;
 
         #endregion
     }

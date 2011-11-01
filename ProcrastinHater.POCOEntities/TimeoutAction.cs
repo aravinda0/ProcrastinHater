@@ -65,6 +65,38 @@ namespace ProcrastinHater.POCOEntities
             }
         }
         private ICollection<TimedTaskSettings> _timedTaskSettingsSet;
+    
+        public virtual ICollection<SchedulingInformation> SchedulingInformationSet
+        {
+            get
+            {
+                if (_schedulingInformationSet == null)
+                {
+                    var newCollection = new FixupCollection<SchedulingInformation>();
+                    newCollection.CollectionChanged += FixupSchedulingInformationSet;
+                    _schedulingInformationSet = newCollection;
+                }
+                return _schedulingInformationSet;
+            }
+            set
+            {
+                if (!ReferenceEquals(_schedulingInformationSet, value))
+                {
+                    var previousValue = _schedulingInformationSet as FixupCollection<SchedulingInformation>;
+                    if (previousValue != null)
+                    {
+                        previousValue.CollectionChanged -= FixupSchedulingInformationSet;
+                    }
+                    _schedulingInformationSet = value;
+                    var newValue = value as FixupCollection<SchedulingInformation>;
+                    if (newValue != null)
+                    {
+                        newValue.CollectionChanged += FixupSchedulingInformationSet;
+                    }
+                }
+            }
+        }
+        private ICollection<SchedulingInformation> _schedulingInformationSet;
 
         #endregion
         #region Association Fixup
@@ -82,6 +114,28 @@ namespace ProcrastinHater.POCOEntities
             if (e.OldItems != null)
             {
                 foreach (TimedTaskSettings item in e.OldItems)
+                {
+                    if (ReferenceEquals(item.TimeoutAction, this))
+                    {
+                        item.TimeoutAction = null;
+                    }
+                }
+            }
+        }
+    
+        private void FixupSchedulingInformationSet(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (SchedulingInformation item in e.NewItems)
+                {
+                    item.TimeoutAction = this;
+                }
+            }
+    
+            if (e.OldItems != null)
+            {
+                foreach (SchedulingInformation item in e.OldItems)
                 {
                     if (ReferenceEquals(item.TimeoutAction, this))
                     {

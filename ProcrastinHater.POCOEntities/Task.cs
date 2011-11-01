@@ -74,6 +74,31 @@ namespace ProcrastinHater.POCOEntities
             }
         }
         private Nullable<int> _timedTaskSettingsID;
+    
+        public virtual Nullable<int> ScheduleInfoID
+        {
+            get { return _scheduleInfoID; }
+            set
+            {
+                try
+                {
+                    _settingFK = true;
+                    if (_scheduleInfoID != value)
+                    {
+                        if (SchedulingInformation != null && SchedulingInformation.ScheduleID != value)
+                        {
+                            SchedulingInformation = null;
+                        }
+                        _scheduleInfoID = value;
+                    }
+                }
+                finally
+                {
+                    _settingFK = false;
+                }
+            }
+        }
+        private Nullable<int> _scheduleInfoID;
 
         #endregion
         #region Navigation Properties
@@ -107,6 +132,21 @@ namespace ProcrastinHater.POCOEntities
             }
         }
         private TimedTaskSettings _timedTaskSettings;
+    
+        public virtual SchedulingInformation SchedulingInformation
+        {
+            get { return _schedulingInformation; }
+            set
+            {
+                if (!ReferenceEquals(_schedulingInformation, value))
+                {
+                    var previousValue = _schedulingInformation;
+                    _schedulingInformation = value;
+                    FixupSchedulingInformation(previousValue);
+                }
+            }
+        }
+        private SchedulingInformation _schedulingInformation;
 
         #endregion
         #region Association Fixup
@@ -154,6 +194,30 @@ namespace ProcrastinHater.POCOEntities
             else if (!_settingFK)
             {
                 TimedTaskSettingsID = null;
+            }
+        }
+    
+        private void FixupSchedulingInformation(SchedulingInformation previousValue)
+        {
+            if (previousValue != null && previousValue.Tasks.Contains(this))
+            {
+                previousValue.Tasks.Remove(this);
+            }
+    
+            if (SchedulingInformation != null)
+            {
+                if (!SchedulingInformation.Tasks.Contains(this))
+                {
+                    SchedulingInformation.Tasks.Add(this);
+                }
+                if (ScheduleInfoID != SchedulingInformation.ScheduleID)
+                {
+                    ScheduleInfoID = SchedulingInformation.ScheduleID;
+                }
+            }
+            else if (!_settingFK)
+            {
+                ScheduleInfoID = null;
             }
         }
 
