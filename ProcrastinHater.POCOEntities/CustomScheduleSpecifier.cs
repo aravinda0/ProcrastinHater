@@ -26,9 +26,9 @@ namespace ProcrastinHater.POCOEntities
             {
                 if (_customScheduleID != value)
                 {
-                    if (CustomSchedule != null && CustomSchedule.ScheduleID != value)
+                    if (SchedulingInformation != null && SchedulingInformation.ScheduleID != value)
                     {
-                        CustomSchedule = null;
+                        SchedulingInformation = null;
                     }
                     _customScheduleID = value;
                 }
@@ -47,44 +47,50 @@ namespace ProcrastinHater.POCOEntities
             get;
             set;
         }
+    
+        public virtual long TimeOfDayToStartTicks
+        {
+            get;
+            set;
+        }
 
         #endregion
         #region Navigation Properties
     
-        public virtual CustomSchedule CustomSchedule
+        public virtual SchedulingInformation SchedulingInformation
         {
-            get { return _customSchedule; }
+            get { return _schedulingInformation; }
             set
             {
-                if (!ReferenceEquals(_customSchedule, value))
+                if (!ReferenceEquals(_schedulingInformation, value))
                 {
-                    var previousValue = _customSchedule;
-                    _customSchedule = value;
-                    FixupCustomSchedule(previousValue);
+                    var previousValue = _schedulingInformation;
+                    _schedulingInformation = value;
+                    FixupSchedulingInformation(previousValue);
                 }
             }
         }
-        private CustomSchedule _customSchedule;
+        private SchedulingInformation _schedulingInformation;
 
         #endregion
         #region Association Fixup
     
-        private void FixupCustomSchedule(CustomSchedule previousValue)
+        private void FixupSchedulingInformation(SchedulingInformation previousValue)
         {
             if (previousValue != null && previousValue.CustomScheduleSpecifiers.Contains(this))
             {
                 previousValue.CustomScheduleSpecifiers.Remove(this);
             }
     
-            if (CustomSchedule != null)
+            if (SchedulingInformation != null)
             {
-                if (!CustomSchedule.CustomScheduleSpecifiers.Contains(this))
+                if (!SchedulingInformation.CustomScheduleSpecifiers.Contains(this))
                 {
-                    CustomSchedule.CustomScheduleSpecifiers.Add(this);
+                    SchedulingInformation.CustomScheduleSpecifiers.Add(this);
                 }
-                if (CustomScheduleID != CustomSchedule.ScheduleID)
+                if (CustomScheduleID != SchedulingInformation.ScheduleID)
                 {
-                    CustomScheduleID = CustomSchedule.ScheduleID;
+                    CustomScheduleID = SchedulingInformation.ScheduleID;
                 }
             }
         }

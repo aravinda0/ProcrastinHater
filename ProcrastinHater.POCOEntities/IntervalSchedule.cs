@@ -19,7 +19,7 @@ namespace ProcrastinHater.POCOEntities
     {
         #region Primitive Properties
     
-        public virtual long Interval_Ticks
+        public virtual Nullable<long> IntervalTicks
         {
             get;
             set;
