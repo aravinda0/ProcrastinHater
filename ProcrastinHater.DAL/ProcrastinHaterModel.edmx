@@ -432,22 +432,6 @@
           <EntitySet Name="DayOfYearSpecifiers" EntityType="ProcrastinHater.POCOEntities.DayOfYearSpecifier" />
           <EntitySet Name="MonthlyRelativeSpecifiers" EntityType="ProcrastinHater.POCOEntities.MonthlyRelativeSpecifier" />
           <EntitySet Name="SchedulingInformationSet" EntityType="ProcrastinHater.POCOEntities.SchedulingInformation" />
-          <AssociationSet Name="FK_CustomScheduleSpecifiers_ScheduleInfo" Association="ProcrastinHater.POCOEntities.FK_CustomScheduleSpecifiers_ScheduleInfo">
-            <End Role="SchedulingInformation" EntitySet="SchedulingInformationSet" />
-            <End Role="CustomScheduleSpecifier" EntitySet="CustomScheduleSpecifiers" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DayOfMonthSpecifier_ScheduleInfo" Association="ProcrastinHater.POCOEntities.FK_DayOfMonthSpecifier_ScheduleInfo">
-            <End Role="SchedulingInformation" EntitySet="SchedulingInformationSet" />
-            <End Role="DayofMonthSpecifier" EntitySet="DayofMonthSpecifiers" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DayOfYearSpecifiers_ScheduleInfo" Association="ProcrastinHater.POCOEntities.FK_DayOfYearSpecifiers_ScheduleInfo">
-            <End Role="SchedulingInformation" EntitySet="SchedulingInformationSet" />
-            <End Role="DayOfYearSpecifier" EntitySet="DayOfYearSpecifiers" />
-          </AssociationSet>
-          <AssociationSet Name="FK_MonthlyRelativeSpecifiers_ScheduleInfo" Association="ProcrastinHater.POCOEntities.FK_MonthlyRelativeSpecifiers_ScheduleInfo">
-            <End Role="SchedulingInformation" EntitySet="SchedulingInformationSet" />
-            <End Role="MonthlyRelativeSpecifier" EntitySet="MonthlyRelativeSpecifiers" />
-          </AssociationSet>
           <AssociationSet Name="FK_ScheduleInfo_TimeoutActions" Association="ProcrastinHater.POCOEntities.FK_ScheduleInfo_TimeoutActions">
             <End Role="TimeoutAction" EntitySet="TimeoutActions" />
             <End Role="SchedulingInformation" EntitySet="SchedulingInformationSet" />
@@ -455,6 +439,22 @@
           <AssociationSet Name="FK_Tasks_ScheduleInfo" Association="ProcrastinHater.POCOEntities.FK_Tasks_ScheduleInfo">
             <End Role="SchedulingInformation" EntitySet="SchedulingInformationSet" />
             <End Role="Task" EntitySet="ChecklistElements" />
+          </AssociationSet>
+          <AssociationSet Name="CustomScheduleCustomScheduleSpecifier" Association="ProcrastinHater.POCOEntities.CustomScheduleCustomScheduleSpecifier">
+            <End Role="CustomSchedule" EntitySet="SchedulingInformationSet" />
+            <End Role="CustomScheduleSpecifier" EntitySet="CustomScheduleSpecifiers" />
+          </AssociationSet>
+          <AssociationSet Name="MonthlyScheduleDayofMonthSpecifier" Association="ProcrastinHater.POCOEntities.MonthlyScheduleDayofMonthSpecifier">
+            <End Role="MonthlySchedule" EntitySet="SchedulingInformationSet" />
+            <End Role="DayofMonthSpecifier" EntitySet="DayofMonthSpecifiers" />
+          </AssociationSet>
+          <AssociationSet Name="YearlyScheduleDayOfYearSpecifier" Association="ProcrastinHater.POCOEntities.YearlyScheduleDayOfYearSpecifier">
+            <End Role="YearlySchedule" EntitySet="SchedulingInformationSet" />
+            <End Role="DayOfYearSpecifier" EntitySet="DayOfYearSpecifiers" />
+          </AssociationSet>
+          <AssociationSet Name="MonthlyRelativeScheduleMonthlyRelativeSpecifier" Association="ProcrastinHater.POCOEntities.MonthlyRelativeScheduleMonthlyRelativeSpecifier">
+            <End Role="MonthlyRelativeSchedule" EntitySet="SchedulingInformationSet" />
+            <End Role="MonthlyRelativeSpecifier" EntitySet="MonthlyRelativeSpecifiers" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="ChecklistElement" Abstract="true">
@@ -631,7 +631,7 @@
           <Property Type="Int32" Name="DayOfYear" Nullable="false" />
           <Property Type="Int32" Name="Year" Nullable="false" />
           <Property Type="Int64" Name="TimeOfDayToStartTicks" Nullable="false" />
-          <NavigationProperty Name="SchedulingInformation" Relationship="ProcrastinHater.POCOEntities.FK_CustomScheduleSpecifiers_ScheduleInfo" FromRole="CustomScheduleSpecifier" ToRole="SchedulingInformation" />
+          <NavigationProperty Name="CustomSchedule" Relationship="ProcrastinHater.POCOEntities.CustomScheduleCustomScheduleSpecifier" FromRole="CustomScheduleSpecifier" ToRole="CustomSchedule" />
         </EntityType>
         <EntityType Name="DayofMonthSpecifier">
           <Key>
@@ -642,7 +642,7 @@
           <Property Type="Int32" Name="MonthlyScheduleID" Nullable="false" />
           <Property Type="Int32" Name="Day" Nullable="false" />
           <Property Type="Int64" Name="TimeOfDayToStartTicks" Nullable="false" />
-          <NavigationProperty Name="SchedulingInformation" Relationship="ProcrastinHater.POCOEntities.FK_DayOfMonthSpecifier_ScheduleInfo" FromRole="DayofMonthSpecifier" ToRole="SchedulingInformation" />
+          <NavigationProperty Name="MonthlySchedule" Relationship="ProcrastinHater.POCOEntities.MonthlyScheduleDayofMonthSpecifier" FromRole="DayofMonthSpecifier" ToRole="MonthlySchedule" />
         </EntityType>
         <EntityType Name="DayOfYearSpecifier">
           <Key>
@@ -653,7 +653,7 @@
           <Property Type="Int32" Name="YearlyScheduleID" Nullable="false" />
           <Property Type="Int32" Name="DayOfYear" Nullable="false" />
           <Property Type="Int64" Name="TimeOfDayToStartTicks" Nullable="false" />
-          <NavigationProperty Name="SchedulingInformation" Relationship="ProcrastinHater.POCOEntities.FK_DayOfYearSpecifiers_ScheduleInfo" FromRole="DayOfYearSpecifier" ToRole="SchedulingInformation" />
+          <NavigationProperty Name="YearlySchedule" Relationship="ProcrastinHater.POCOEntities.YearlyScheduleDayOfYearSpecifier" FromRole="DayOfYearSpecifier" ToRole="YearlySchedule" />
         </EntityType>
         <EntityType Name="MonthlyRelativeSpecifier">
           <Key>
@@ -666,7 +666,7 @@
           <Property Type="Int32" Name="DayType" Nullable="false" />
           <Property Type="Int32" Name="Frequency" Nullable="false" />
           <Property Type="Int64" Name="TimeOfDayToStartTicks" Nullable="false" />
-          <NavigationProperty Name="SchedulingInformation" Relationship="ProcrastinHater.POCOEntities.FK_MonthlyRelativeSpecifiers_ScheduleInfo" FromRole="MonthlyRelativeSpecifier" ToRole="SchedulingInformation" />
+          <NavigationProperty Name="MonthlyRelativeSchedule" Relationship="ProcrastinHater.POCOEntities.MonthlyRelativeScheduleMonthlyRelativeSpecifier" FromRole="MonthlyRelativeSpecifier" ToRole="MonthlyRelativeSchedule" />
         </EntityType>
         <EntityType Name="SchedulingInformation" Abstract="true">
           <Key>
@@ -678,61 +678,9 @@
           <Property Type="Boolean" Name="IsEnabled" Nullable="false" />
           <Property Type="String" Name="Name" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Type="Int64" Name="DurationTicks" />
-          <NavigationProperty Name="CustomScheduleSpecifiers" Relationship="ProcrastinHater.POCOEntities.FK_CustomScheduleSpecifiers_ScheduleInfo" FromRole="SchedulingInformation" ToRole="CustomScheduleSpecifier" />
-          <NavigationProperty Name="DayofMonthSpecifiers" Relationship="ProcrastinHater.POCOEntities.FK_DayOfMonthSpecifier_ScheduleInfo" FromRole="SchedulingInformation" ToRole="DayofMonthSpecifier" />
-          <NavigationProperty Name="DayOfYearSpecifiers" Relationship="ProcrastinHater.POCOEntities.FK_DayOfYearSpecifiers_ScheduleInfo" FromRole="SchedulingInformation" ToRole="DayOfYearSpecifier" />
-          <NavigationProperty Name="MonthlyRelativeSpecifiers" Relationship="ProcrastinHater.POCOEntities.FK_MonthlyRelativeSpecifiers_ScheduleInfo" FromRole="SchedulingInformation" ToRole="MonthlyRelativeSpecifier" />
           <NavigationProperty Name="TimeoutAction" Relationship="ProcrastinHater.POCOEntities.FK_ScheduleInfo_TimeoutActions" FromRole="SchedulingInformation" ToRole="TimeoutAction" />
           <NavigationProperty Name="Tasks" Relationship="ProcrastinHater.POCOEntities.FK_Tasks_ScheduleInfo" FromRole="SchedulingInformation" ToRole="Task" />
         </EntityType>
-        <Association Name="FK_CustomScheduleSpecifiers_ScheduleInfo">
-          <End Type="ProcrastinHater.POCOEntities.SchedulingInformation" Role="SchedulingInformation" Multiplicity="1" />
-          <End Type="ProcrastinHater.POCOEntities.CustomScheduleSpecifier" Role="CustomScheduleSpecifier" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SchedulingInformation">
-              <PropertyRef Name="ScheduleID" />
-            </Principal>
-            <Dependent Role="CustomScheduleSpecifier">
-              <PropertyRef Name="CustomScheduleID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DayOfMonthSpecifier_ScheduleInfo">
-          <End Type="ProcrastinHater.POCOEntities.SchedulingInformation" Role="SchedulingInformation" Multiplicity="1" />
-          <End Type="ProcrastinHater.POCOEntities.DayofMonthSpecifier" Role="DayofMonthSpecifier" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SchedulingInformation">
-              <PropertyRef Name="ScheduleID" />
-            </Principal>
-            <Dependent Role="DayofMonthSpecifier">
-              <PropertyRef Name="MonthlyScheduleID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DayOfYearSpecifiers_ScheduleInfo">
-          <End Type="ProcrastinHater.POCOEntities.SchedulingInformation" Role="SchedulingInformation" Multiplicity="1" />
-          <End Type="ProcrastinHater.POCOEntities.DayOfYearSpecifier" Role="DayOfYearSpecifier" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SchedulingInformation">
-              <PropertyRef Name="ScheduleID" />
-            </Principal>
-            <Dependent Role="DayOfYearSpecifier">
-              <PropertyRef Name="YearlyScheduleID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_MonthlyRelativeSpecifiers_ScheduleInfo">
-          <End Type="ProcrastinHater.POCOEntities.SchedulingInformation" Role="SchedulingInformation" Multiplicity="1" />
-          <End Type="ProcrastinHater.POCOEntities.MonthlyRelativeSpecifier" Role="MonthlyRelativeSpecifier" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SchedulingInformation">
-              <PropertyRef Name="ScheduleID" />
-            </Principal>
-            <Dependent Role="MonthlyRelativeSpecifier">
-              <PropertyRef Name="MonthlyRelativeScheduleID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ScheduleInfo_TimeoutActions">
           <End Type="ProcrastinHater.POCOEntities.TimeoutAction" Role="TimeoutAction" Multiplicity="1" />
           <End Type="ProcrastinHater.POCOEntities.SchedulingInformation" Role="SchedulingInformation" Multiplicity="*" />
@@ -757,13 +705,69 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="CustomSchedule" BaseType="ProcrastinHater.POCOEntities.SchedulingInformation" />
+        <EntityType Name="CustomSchedule" BaseType="ProcrastinHater.POCOEntities.SchedulingInformation" >
+          <NavigationProperty Name="CustomScheduleSpecifiers" Relationship="ProcrastinHater.POCOEntities.CustomScheduleCustomScheduleSpecifier" FromRole="CustomSchedule" ToRole="CustomScheduleSpecifier" />
+        </EntityType>
         <EntityType Name="IntervalSchedule" BaseType="ProcrastinHater.POCOEntities.SchedulingInformation" >
           <Property Type="Int64" Name="IntervalTicks" />
         </EntityType>
-        <EntityType Name="MonthlySchedule" BaseType="ProcrastinHater.POCOEntities.SchedulingInformation" />
-        <EntityType Name="YearlySchedule" BaseType="ProcrastinHater.POCOEntities.SchedulingInformation" />
-        <EntityType Name="MonthlyRelativeSchedule" BaseType="ProcrastinHater.POCOEntities.SchedulingInformation" />
+        <EntityType Name="MonthlySchedule" BaseType="ProcrastinHater.POCOEntities.SchedulingInformation" >
+          <NavigationProperty Name="DayofMonthSpecifiers" Relationship="ProcrastinHater.POCOEntities.MonthlyScheduleDayofMonthSpecifier" FromRole="MonthlySchedule" ToRole="DayofMonthSpecifier" />
+        </EntityType>
+        <EntityType Name="YearlySchedule" BaseType="ProcrastinHater.POCOEntities.SchedulingInformation" >
+          <NavigationProperty Name="DayOfYearSpecifiers" Relationship="ProcrastinHater.POCOEntities.YearlyScheduleDayOfYearSpecifier" FromRole="YearlySchedule" ToRole="DayOfYearSpecifier" />
+        </EntityType>
+        <EntityType Name="MonthlyRelativeSchedule" BaseType="ProcrastinHater.POCOEntities.SchedulingInformation" >
+          <NavigationProperty Name="MonthlyRelativeSpecifiers" Relationship="ProcrastinHater.POCOEntities.MonthlyRelativeScheduleMonthlyRelativeSpecifier" FromRole="MonthlyRelativeSchedule" ToRole="MonthlyRelativeSpecifier" />
+        </EntityType>
+        <Association Name="CustomScheduleCustomScheduleSpecifier">
+          <End Type="ProcrastinHater.POCOEntities.CustomSchedule" Role="CustomSchedule" Multiplicity="1" />
+          <End Type="ProcrastinHater.POCOEntities.CustomScheduleSpecifier" Role="CustomScheduleSpecifier" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomSchedule">
+              <PropertyRef Name="ScheduleID" />
+            </Principal>
+            <Dependent Role="CustomScheduleSpecifier">
+              <PropertyRef Name="CustomScheduleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="MonthlyScheduleDayofMonthSpecifier">
+          <End Type="ProcrastinHater.POCOEntities.MonthlySchedule" Role="MonthlySchedule" Multiplicity="1" />
+          <End Type="ProcrastinHater.POCOEntities.DayofMonthSpecifier" Role="DayofMonthSpecifier" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MonthlySchedule">
+              <PropertyRef Name="ScheduleID" />
+            </Principal>
+            <Dependent Role="DayofMonthSpecifier">
+              <PropertyRef Name="MonthlyScheduleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="YearlyScheduleDayOfYearSpecifier">
+          <End Type="ProcrastinHater.POCOEntities.YearlySchedule" Role="YearlySchedule" Multiplicity="1" />
+          <End Type="ProcrastinHater.POCOEntities.DayOfYearSpecifier" Role="DayOfYearSpecifier" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="YearlySchedule">
+              <PropertyRef Name="ScheduleID" />
+            </Principal>
+            <Dependent Role="DayOfYearSpecifier">
+              <PropertyRef Name="YearlyScheduleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="MonthlyRelativeScheduleMonthlyRelativeSpecifier">
+          <End Type="ProcrastinHater.POCOEntities.MonthlyRelativeSchedule" Role="MonthlyRelativeSchedule" Multiplicity="1" />
+          <End Type="ProcrastinHater.POCOEntities.MonthlyRelativeSpecifier" Role="MonthlyRelativeSpecifier" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MonthlyRelativeSchedule">
+              <PropertyRef Name="ScheduleID" />
+            </Principal>
+            <Dependent Role="MonthlyRelativeSpecifier">
+              <PropertyRef Name="MonthlyRelativeScheduleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -996,37 +1000,19 @@
           <ConnectorPoint PointX="3" PointY="7.4801741536458328" />
         </AssociationConnector>
         <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.HardSettings" Width="1.5" PointX="5.375" PointY="3.75" Height="1.5923063151041674" />
-        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.CustomScheduleSpecifier" Width="2.125" PointX="5.75" PointY="9.5" Height="1.7566536458333246" />
-        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.DayofMonthSpecifier" Width="2.25" PointX="5.75" PointY="12" Height="1.5923063151041674" />
-        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.DayOfYearSpecifier" Width="2.125" PointX="5.75" PointY="14.25" Height="1.5923063151041674" />
-        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.MonthlyRelativeSpecifier" Width="2.125" PointX="6.875" PointY="16.125" Height="1.7566536458333246" />
+        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.CustomScheduleSpecifier" Width="2.125" PointX="5.75" PointY="9.5" Height="1.7566536458333317" />
+        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.DayofMonthSpecifier" Width="2.25" PointX="5.75" PointY="12" Height="1.5923063151041657" />
+        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.DayOfYearSpecifier" Width="2.125" PointX="5.75" PointY="14.25" Height="1.5923063151041657" />
+        <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.MonthlyRelativeSpecifier" Width="2.125" PointX="6.875" PointY="16.125" Height="1.7566536458333353" />
         <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.SchedulingInformation" Width="2.25" PointX="2.75" PointY="12.25" Height="2.9070849609374996" />
-        <AssociationConnector Association="ProcrastinHater.POCOEntities.FK_CustomScheduleSpecifiers_ScheduleInfo" >
-          <ConnectorPoint PointX="4.298828125" PointY="12.25" />
-          <ConnectorPoint PointX="4.298828125" PointY="10.378326822916662" />
-          <ConnectorPoint PointX="5.75" PointY="10.378326822916662" />
-        </AssociationConnector>
-        <AssociationConnector Association="ProcrastinHater.POCOEntities.FK_DayOfMonthSpecifier_ScheduleInfo" >
-          <ConnectorPoint PointX="5" PointY="12.921153157552084" />
-          <ConnectorPoint PointX="5.75" PointY="12.921153157552084" />
-        </AssociationConnector>
-        <AssociationConnector Association="ProcrastinHater.POCOEntities.FK_DayOfYearSpecifiers_ScheduleInfo" >
-          <ConnectorPoint PointX="5" PointY="14.70354248046875" />
-          <ConnectorPoint PointX="5.75" PointY="14.70354248046875" />
-        </AssociationConnector>
-        <AssociationConnector Association="ProcrastinHater.POCOEntities.FK_MonthlyRelativeSpecifiers_ScheduleInfo" >
-          <ConnectorPoint PointX="4.4687525" PointY="15.1570849609375" />
-          <ConnectorPoint PointX="4.4687525" PointY="17.353326822916664" />
-          <ConnectorPoint PointX="6.875" PointY="17.353326822916664" />
-        </AssociationConnector>
         <AssociationConnector Association="ProcrastinHater.POCOEntities.FK_ScheduleInfo_TimeoutActions" >
           <ConnectorPoint PointX="1.78125" PointY="10.717306315104167" />
-          <ConnectorPoint PointX="1.78125" PointY="13.70354248046875" />
-          <ConnectorPoint PointX="2.75" PointY="13.70354248046875" />
+          <ConnectorPoint PointX="1.78125" PointY="13.621368815104166" />
+          <ConnectorPoint PointX="2.75" PointY="13.621368815104166" />
         </AssociationConnector>
         <AssociationConnector Association="ProcrastinHater.POCOEntities.FK_Tasks_ScheduleInfo" >
-          <ConnectorPoint PointX="3.5869140625" PointY="12.25" />
-          <ConnectorPoint PointX="3.5869140625" PointY="8.2103483072916656" />
+          <ConnectorPoint PointX="3.875" PointY="12.25" />
+          <ConnectorPoint PointX="3.875" PointY="8.2103483072916656" />
         </AssociationConnector>
         <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.CustomSchedule" Width="1.5" PointX="0.5" PointY="15.625" Height="0.93491699218750313" />
         <InheritanceConnector EntityType="ProcrastinHater.POCOEntities.CustomSchedule" >
@@ -1044,25 +1030,60 @@
         </InheritanceConnector>
         <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.MonthlySchedule" Width="1.5" PointX="0.5" PointY="18.625" Height="0.93491699218750313" />
         <InheritanceConnector EntityType="ProcrastinHater.POCOEntities.MonthlySchedule" >
-          <ConnectorPoint PointX="3.875" PointY="15.1570849609375" />
+          <ConnectorPoint PointX="3.875" PointY="14.664042968749998" />
           <ConnectorPoint PointX="3.875" PointY="18.385" />
+          <ConnectorPoint PointX="2.3241779212740368" PointY="18.385" />
+          <ConnectorPoint PointX="2.15751125460737" PointY="18.385" />
           <ConnectorPoint PointX="1.25" PointY="18.385" />
-          <ConnectorPoint PointX="1.25" PointY="18.625" />
+          <ConnectorPoint PointX="1.25" PointY="18.624999999999996" />
         </InheritanceConnector>
         <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.YearlySchedule" Width="1.5" PointX="3.875" PointY="19" Height="0.93491699218750313" />
         <InheritanceConnector EntityType="ProcrastinHater.POCOEntities.YearlySchedule" >
-          <ConnectorPoint PointX="3.875" PointY="15.1570849609375" />
+          <ConnectorPoint PointX="3.875" PointY="14.664042968749998" />
           <ConnectorPoint PointX="3.875" PointY="18.625" />
           <ConnectorPoint PointX="4.625" PointY="18.625" />
-          <ConnectorPoint PointX="4.625" PointY="19" />
+          <ConnectorPoint PointX="4.625" PointY="18.999999999999996" />
         </InheritanceConnector>
         <EntityTypeShape EntityType="ProcrastinHater.POCOEntities.MonthlyRelativeSchedule" Width="1.5" PointX="5.875" PointY="19" Height="0.93491699218750313" />
         <InheritanceConnector EntityType="ProcrastinHater.POCOEntities.MonthlyRelativeSchedule" >
-          <ConnectorPoint PointX="3.875" PointY="15.1570849609375" />
+          <ConnectorPoint PointX="3.875" PointY="14.664042968749998" />
           <ConnectorPoint PointX="3.875" PointY="18.625" />
+          <ConnectorPoint PointX="5.135416666666667" PointY="18.625" />
+          <ConnectorPoint PointX="5.302083333333333" PointY="18.625" />
           <ConnectorPoint PointX="6.625" PointY="18.625" />
           <ConnectorPoint PointX="6.625" PointY="19" />
         </InheritanceConnector>
+        <AssociationConnector Association="ProcrastinHater.POCOEntities.CustomScheduleCustomScheduleSpecifier">
+          <ConnectorPoint PointX="0.65625" PointY="15.625" />
+          <ConnectorPoint PointX="0.65625" PointY="11.01822998046875" />
+          <ConnectorPoint PointX="1.6979166666666667" PointY="11.01822998046875" />
+          <ConnectorPoint PointX="1.8645833333333333" PointY="11.01822998046875" />
+          <ConnectorPoint PointX="3.7916666666666665" PointY="11.01822998046875" />
+          <ConnectorPoint PointX="3.9583333333333335" PointY="11.01822998046875" />
+          <ConnectorPoint PointX="5.75" PointY="11.01822998046875" />
+        </AssociationConnector>
+        <AssociationConnector Association="ProcrastinHater.POCOEntities.MonthlyScheduleDayofMonthSpecifier">
+          <ConnectorPoint PointX="2" PointY="18.625844587940705" />
+          <ConnectorPoint PointX="2.3758445879407049" PointY="18.25" />
+          <ConnectorPoint PointX="3.7916666666666665" PointY="18.25" />
+          <ConnectorPoint PointX="3.9583333333333335" PointY="18.25" />
+          <ConnectorPoint PointX="5.135416666666667" PointY="18.25" />
+          <ConnectorPoint PointX="5.302083333333333" PointY="18.25" />
+          <ConnectorPoint PointX="5.375" PointY="18.25" />
+          <ConnectorPoint PointX="5.375" PointY="13.967306315104167" />
+          <ConnectorPoint PointX="5.7500000000000018" PointY="13.592306315104166" />
+        </AssociationConnector>
+        <AssociationConnector Association="ProcrastinHater.POCOEntities.YearlyScheduleDayOfYearSpecifier">
+          <ConnectorPoint PointX="5.21875" PointY="19" />
+          <ConnectorPoint PointX="5.21875" PointY="15.284424641927084" />
+          <ConnectorPoint PointX="5.291666666666667" PointY="15.284424641927084" />
+          <ConnectorPoint PointX="5.458333333333333" PointY="15.284424641927084" />
+          <ConnectorPoint PointX="5.75" PointY="15.284424641927084" />
+        </AssociationConnector>
+        <AssociationConnector Association="ProcrastinHater.POCOEntities.MonthlyRelativeScheduleMonthlyRelativeSpecifier">
+          <ConnectorPoint PointX="7.125" PointY="19" />
+          <ConnectorPoint PointX="7.125" PointY="17.881653645833335" />
+        </AssociationConnector>
         </Diagram>
     </Diagrams>
   </Designer>

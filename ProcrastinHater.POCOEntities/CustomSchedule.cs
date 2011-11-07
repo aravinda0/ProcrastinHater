@@ -17,5 +17,65 @@ namespace ProcrastinHater.POCOEntities
 {
     public partial class CustomSchedule : SchedulingInformation
     {
+        #region Navigation Properties
+    
+        public virtual ICollection<CustomScheduleSpecifier> CustomScheduleSpecifiers
+        {
+            get
+            {
+                if (_customScheduleSpecifiers == null)
+                {
+                    var newCollection = new FixupCollection<CustomScheduleSpecifier>();
+                    newCollection.CollectionChanged += FixupCustomScheduleSpecifiers;
+                    _customScheduleSpecifiers = newCollection;
+                }
+                return _customScheduleSpecifiers;
+            }
+            set
+            {
+                if (!ReferenceEquals(_customScheduleSpecifiers, value))
+                {
+                    var previousValue = _customScheduleSpecifiers as FixupCollection<CustomScheduleSpecifier>;
+                    if (previousValue != null)
+                    {
+                        previousValue.CollectionChanged -= FixupCustomScheduleSpecifiers;
+                    }
+                    _customScheduleSpecifiers = value;
+                    var newValue = value as FixupCollection<CustomScheduleSpecifier>;
+                    if (newValue != null)
+                    {
+                        newValue.CollectionChanged += FixupCustomScheduleSpecifiers;
+                    }
+                }
+            }
+        }
+        private ICollection<CustomScheduleSpecifier> _customScheduleSpecifiers;
+
+        #endregion
+        #region Association Fixup
+    
+        private void FixupCustomScheduleSpecifiers(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (CustomScheduleSpecifier item in e.NewItems)
+                {
+                    item.CustomSchedule = this;
+                }
+            }
+    
+            if (e.OldItems != null)
+            {
+                foreach (CustomScheduleSpecifier item in e.OldItems)
+                {
+                    if (ReferenceEquals(item.CustomSchedule, this))
+                    {
+                        item.CustomSchedule = null;
+                    }
+                }
+            }
+        }
+
+        #endregion
     }
 }

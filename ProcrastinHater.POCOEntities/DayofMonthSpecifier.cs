@@ -26,9 +26,9 @@ namespace ProcrastinHater.POCOEntities
             {
                 if (_monthlyScheduleID != value)
                 {
-                    if (SchedulingInformation != null && SchedulingInformation.ScheduleID != value)
+                    if (MonthlySchedule != null && MonthlySchedule.ScheduleID != value)
                     {
-                        SchedulingInformation = null;
+                        MonthlySchedule = null;
                     }
                     _monthlyScheduleID = value;
                 }
@@ -51,40 +51,40 @@ namespace ProcrastinHater.POCOEntities
         #endregion
         #region Navigation Properties
     
-        public virtual SchedulingInformation SchedulingInformation
+        public virtual MonthlySchedule MonthlySchedule
         {
-            get { return _schedulingInformation; }
+            get { return _monthlySchedule; }
             set
             {
-                if (!ReferenceEquals(_schedulingInformation, value))
+                if (!ReferenceEquals(_monthlySchedule, value))
                 {
-                    var previousValue = _schedulingInformation;
-                    _schedulingInformation = value;
-                    FixupSchedulingInformation(previousValue);
+                    var previousValue = _monthlySchedule;
+                    _monthlySchedule = value;
+                    FixupMonthlySchedule(previousValue);
                 }
             }
         }
-        private SchedulingInformation _schedulingInformation;
+        private MonthlySchedule _monthlySchedule;
 
         #endregion
         #region Association Fixup
     
-        private void FixupSchedulingInformation(SchedulingInformation previousValue)
+        private void FixupMonthlySchedule(MonthlySchedule previousValue)
         {
             if (previousValue != null && previousValue.DayofMonthSpecifiers.Contains(this))
             {
                 previousValue.DayofMonthSpecifiers.Remove(this);
             }
     
-            if (SchedulingInformation != null)
+            if (MonthlySchedule != null)
             {
-                if (!SchedulingInformation.DayofMonthSpecifiers.Contains(this))
+                if (!MonthlySchedule.DayofMonthSpecifiers.Contains(this))
                 {
-                    SchedulingInformation.DayofMonthSpecifiers.Add(this);
+                    MonthlySchedule.DayofMonthSpecifiers.Add(this);
                 }
-                if (MonthlyScheduleID != SchedulingInformation.ScheduleID)
+                if (MonthlyScheduleID != MonthlySchedule.ScheduleID)
                 {
-                    MonthlyScheduleID = SchedulingInformation.ScheduleID;
+                    MonthlyScheduleID = MonthlySchedule.ScheduleID;
                 }
             }
         }

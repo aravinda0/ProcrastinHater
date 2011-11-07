@@ -17,5 +17,65 @@ namespace ProcrastinHater.POCOEntities
 {
     public partial class MonthlySchedule : SchedulingInformation
     {
+        #region Navigation Properties
+    
+        public virtual ICollection<DayofMonthSpecifier> DayofMonthSpecifiers
+        {
+            get
+            {
+                if (_dayofMonthSpecifiers == null)
+                {
+                    var newCollection = new FixupCollection<DayofMonthSpecifier>();
+                    newCollection.CollectionChanged += FixupDayofMonthSpecifiers;
+                    _dayofMonthSpecifiers = newCollection;
+                }
+                return _dayofMonthSpecifiers;
+            }
+            set
+            {
+                if (!ReferenceEquals(_dayofMonthSpecifiers, value))
+                {
+                    var previousValue = _dayofMonthSpecifiers as FixupCollection<DayofMonthSpecifier>;
+                    if (previousValue != null)
+                    {
+                        previousValue.CollectionChanged -= FixupDayofMonthSpecifiers;
+                    }
+                    _dayofMonthSpecifiers = value;
+                    var newValue = value as FixupCollection<DayofMonthSpecifier>;
+                    if (newValue != null)
+                    {
+                        newValue.CollectionChanged += FixupDayofMonthSpecifiers;
+                    }
+                }
+            }
+        }
+        private ICollection<DayofMonthSpecifier> _dayofMonthSpecifiers;
+
+        #endregion
+        #region Association Fixup
+    
+        private void FixupDayofMonthSpecifiers(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (DayofMonthSpecifier item in e.NewItems)
+                {
+                    item.MonthlySchedule = this;
+                }
+            }
+    
+            if (e.OldItems != null)
+            {
+                foreach (DayofMonthSpecifier item in e.OldItems)
+                {
+                    if (ReferenceEquals(item.MonthlySchedule, this))
+                    {
+                        item.MonthlySchedule = null;
+                    }
+                }
+            }
+        }
+
+        #endregion
     }
 }

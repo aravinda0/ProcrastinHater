@@ -26,9 +26,9 @@ namespace ProcrastinHater.POCOEntities
             {
                 if (_yearlyScheduleID != value)
                 {
-                    if (SchedulingInformation != null && SchedulingInformation.ScheduleID != value)
+                    if (YearlySchedule != null && YearlySchedule.ScheduleID != value)
                     {
-                        SchedulingInformation = null;
+                        YearlySchedule = null;
                     }
                     _yearlyScheduleID = value;
                 }
@@ -51,40 +51,40 @@ namespace ProcrastinHater.POCOEntities
         #endregion
         #region Navigation Properties
     
-        public virtual SchedulingInformation SchedulingInformation
+        public virtual YearlySchedule YearlySchedule
         {
-            get { return _schedulingInformation; }
+            get { return _yearlySchedule; }
             set
             {
-                if (!ReferenceEquals(_schedulingInformation, value))
+                if (!ReferenceEquals(_yearlySchedule, value))
                 {
-                    var previousValue = _schedulingInformation;
-                    _schedulingInformation = value;
-                    FixupSchedulingInformation(previousValue);
+                    var previousValue = _yearlySchedule;
+                    _yearlySchedule = value;
+                    FixupYearlySchedule(previousValue);
                 }
             }
         }
-        private SchedulingInformation _schedulingInformation;
+        private YearlySchedule _yearlySchedule;
 
         #endregion
         #region Association Fixup
     
-        private void FixupSchedulingInformation(SchedulingInformation previousValue)
+        private void FixupYearlySchedule(YearlySchedule previousValue)
         {
             if (previousValue != null && previousValue.DayOfYearSpecifiers.Contains(this))
             {
                 previousValue.DayOfYearSpecifiers.Remove(this);
             }
     
-            if (SchedulingInformation != null)
+            if (YearlySchedule != null)
             {
-                if (!SchedulingInformation.DayOfYearSpecifiers.Contains(this))
+                if (!YearlySchedule.DayOfYearSpecifiers.Contains(this))
                 {
-                    SchedulingInformation.DayOfYearSpecifiers.Add(this);
+                    YearlySchedule.DayOfYearSpecifiers.Add(this);
                 }
-                if (YearlyScheduleID != SchedulingInformation.ScheduleID)
+                if (YearlyScheduleID != YearlySchedule.ScheduleID)
                 {
-                    YearlyScheduleID = SchedulingInformation.ScheduleID;
+                    YearlyScheduleID = YearlySchedule.ScheduleID;
                 }
             }
         }
